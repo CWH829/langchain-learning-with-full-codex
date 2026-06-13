@@ -37,11 +37,11 @@ uv run pytest
 # 运行 ruff 检查
 uv run ruff check .
 
-# 运行示例占位脚本
-uv run python examples/01_hello_agent.py
+# 运行 LC-02 最小 agent 示例
+uv run python learning/LC-02_minimal_agent/hello_agent.py
 ```
 
-当前 `examples/` 中的脚本是按学习路线预留的占位示例，会在对应知识点推进时逐步补全为可运行实现。
+学习材料按阶段放在 `learning/` 下。每个阶段目录按实际需要收纳代码、笔记、排障记录或数据样例，不强制固定文件模板。
 
 ## 目录结构
 
@@ -51,8 +51,10 @@ uv run python examples/01_hello_agent.py
 ├── .agents/
 │   └── LANGCHAIN_PLAN.md
 ├── deep-research-report.md
-├── examples/
-├── notes/
+├── learning/
+│   ├── LC-01_version_boundary/
+│   ├── LC-02_minimal_agent/
+│   └── PY-01_venv_uv/
 ├── src/
 │   └── langchain_study/
 ├── tests/
@@ -62,4 +64,4 @@ uv run python examples/01_hello_agent.py
 
 ## 学习推进
 
-学习任务以 `.agents/LANGCHAIN_PLAN.md` 为准。推进某个知识点时，优先核对官方文档，再补充中文讲解、笔记、示例代码和必要测试；完成后更新学习计划中的状态和备注。
+学习任务以 `.agents/LANGCHAIN_PLAN.md` 为准。推进某个知识点时，优先核对官方文档，再在对应 `learning/` 阶段目录中补充中文讲解、笔记、示例代码和必要排障记录；完成后更新学习计划中的状态和备注。
