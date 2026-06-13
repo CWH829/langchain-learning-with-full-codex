@@ -1,0 +1,34 @@
+[project]
+name = "langchain-learning"
+version = "0.1.0"
+description = "A LangChain v1 learning project for Java developers learning Python."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain==1.3.9",
+    "langgraph==1.2.5",
+    "langchain-mcp-adapters==0.3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==9.0.3",
+    "ruff==0.15.17",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/langchain_study"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
