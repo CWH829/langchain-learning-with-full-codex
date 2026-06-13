@@ -6,6 +6,7 @@
 
 - `.agents/LANGCHAIN_PLAN.md`：完整学习路线、当前进度、知识点表和执行说明。
 - `AGENTS.md`：Codex 协作约束，主要约定代码注释和 Git 提交信息尽量使用中文。
+- `deep-research-report.md`：学习计划形成前的资料调研与设计依据。
 
 ## 当前基线
 
@@ -49,6 +50,7 @@ uv run python examples/01_hello_agent.py
 ├── AGENTS.md
 ├── .agents/
 │   └── LANGCHAIN_PLAN.md
+├── deep-research-report.md
 ├── examples/
 ├── notes/
 ├── src/
