@@ -26,10 +26,11 @@
 4. 每个知识点按实际内容灵活推进；必要动作包括：确认官方资料、用中文讲清关键概念、整理知识笔记、引导学习者完成代码实践、学习后在文档中补充实践记录或总结、更新进度记录。也可以看情况丰富一些扩展知识、常见注意点。练习题、小任务、常见坑等内容在对当前知识点有实际帮助时补充，不作为固定模板。
 5. 代码以 Python 为主；遇到 Python 语法、项目结构、依赖管理、异步、类型标注等内容时，面向 Java 开发者补充说明。
 6. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
-7. 代码有问题时，Codex 先引导学习者自己改；知识笔记和总结可主动整理。
-8. 开始或推进某个知识点时先标为“进行中”；达到本知识点目标，或学习者明确表示已学完时，再标为“已完成”。不要刚开始就标完成。
-9. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更，不记录项目代码、目录或提交历史的普通变更。同一阶段的多次计划调整可以合并成一条记录，并在单元格内用序号列出。
-10. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料、概念和必要代码片段。
+7. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
+8. 代码有问题时，Codex 先引导学习者自己改；知识笔记和总结可主动整理。
+9. 开始或推进某个知识点时先标为“进行中”；达到本知识点目标，或学习者明确表示已学完时，再标为“已完成”。不要刚开始就标完成。
+10. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更，不记录项目代码、目录或提交历史的普通变更。同一阶段的多次计划调整可以合并成一条记录，并在单元格内用序号列出。
+11. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料、概念和必要代码片段。
 
 状态列使用 emoji 记录：`⬜` 表示未开始，`🟡` 表示进行中，`✅` 表示已完成，`⏭️` 表示跳过。
 
@@ -119,7 +120,7 @@ uv sync
 | ✅ | LC-00 | 项目初始化 | uv、项目结构、Git 规则 | 建好学习仓库 | 初始目录 + README | 初始化项目并首次提交 | venv/uv 与 Maven/Gradle 的区别 | 2026-06-13 | 2026-06-13 | R10 | 已创建 uv 兼容项目骨架；计划迁移到 `.agents/`；依赖改为 PyPI 最新精确版本。 |
 | ✅ | LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | `learning/LC-01_version_boundary/version_boundary.md` | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
 | ✅ | LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | `learning/LC-02_minimal_agent/hello_agent.py`、`learning/LC-02_minimal_agent/minimal_agent.md` | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 | 2026-06-13 | 2026-06-13 | R5 | 已跑通最小 agent invoke 和工具调用；环境切到 Python 3.12 + uv；因 OpenAI API 额度不足，改用 DeepSeek OpenAI-compatible API，并补充 `langchain-openai` 依赖。 |
-| ⬜ | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider |  | 封装可切换 model 配置 | 环境变量、配置读取 |  |  | R6 |  |
+| 🟡 | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `learning/LC-03_models/models.md`、`learning/LC-03_models/model_config_skeleton.py` | 封装可切换 model 配置 | 环境变量、配置读取 | 2026-06-13 |  | R6 | 已核对官方 Models 与 ChatOpenAI integration 文档；本阶段先整理概念、参数和可手写骨架，等待学习者补全实践代码。 |
 | ⬜ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 |  | 打印并分析 messages 流 | list/dict、对象属性访问 |  |  | R6 |  |
 | ⬜ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 |  | search + calculator 双工具 agent | docstring、type hints、异常处理 |  |  | R6 |  |
 | ⬜ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 |  | 输出 `TaskPlan` / `StudySummary` | Pydantic 类似强类型 DTO |  |  | R6 |  |
@@ -189,3 +190,4 @@ uv sync
 | 2026-06-13 | 细化阶段推进与记录规则：学习后需要补充实践记录或总结；未开始阶段不提前固定产出文件；Python 补充学习索引状态列改用与知识点总表一致的 emoji。 | 执行说明、知识点总表、Python 补充学习索引 |
 | 2026-06-13 | 调整 Git 记录规范表述：提供建议提交信息和改动摘要，学习者自行手动提交。 | 学习记录规范 |
 | 2026-06-13 | 增加新阶段启动前确认规则：涉及资料检索、官方文档核对、知识点整理、文件生成等操作前，Codex 先提醒学习者确认智能程度为“高”，等待回复后再继续。 | 执行说明、协作约束 |
+| 2026-06-13 | 增加 Python 手写骨架 origin 副本规则：创建骨架文件时可同步保留最初始副本，便于未来复用或对照。 | 执行说明、协作约束 |
