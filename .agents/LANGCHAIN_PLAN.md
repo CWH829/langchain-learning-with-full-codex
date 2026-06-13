@@ -13,22 +13,24 @@
 | 主学习语言 | Python |
 | 学习者背景 | Java 开发者，Python 基础较薄弱 |
 | 项目语境 | Codex project |
-| 学习方式 | 问答讲解 + Python 代码实践 + Git 记录 |
+| 学习方式 | 问答讲解 + 学习者手写 Python 代码实践 + Codex 整理知识笔记与 Git 记录 |
 | 学习时长 | 未指定 |
 | 学习深度 | 先达到能独立完成 agent、RAG、MCP、trace/eval 小项目 |
 | 更新时间 | 2026-06-13 |
 
 ## 2. Codex Agent 执行说明
 
-1. 先读本文件，找到“知识点总表”中第一条 `未开始` 或 `进行中` 的任务。
+1. 先读本文件，找到“知识点总表”中第一条状态为“未开始”或“进行中”的任务。
 2. 学习每个知识点前，优先检索官方文档，确认 API、包名、导入路径未过时。
-3. 每个知识点按实际内容灵活推进；必要动作包括：确认官方资料、用中文讲清关键概念、完成对应笔记或代码实践、更新进度记录。练习题、小任务、常见坑等内容只在对当前知识点有实际帮助时补充，不作为固定模板。
+3. 每个知识点按实际内容灵活推进；必要动作包括：确认官方资料、用中文讲清关键概念、整理知识笔记、引导学习者完成代码实践、更新进度记录。练习题、小任务、常见坑等内容只在对当前知识点有实际帮助时补充，不作为固定模板。
 4. 代码以 Python 为主；遇到 Python 语法、项目结构、依赖管理、异步、类型标注等内容时，面向 Java 开发者补充说明。
-5. 每次完成任务后，更新本文件中的状态、开始时间、完成时间和备注。
-6. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更，不记录项目代码、目录或提交历史的普通变更。同一阶段的多次计划调整可以合并成一条记录，并在单元格内用序号列出。
-7. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料和代码。
+5. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
+6. 代码有问题时，Codex 先引导学习者自己改；知识笔记和总结可主动整理。
+7. 开始或推进某个知识点时先标为“进行中”；达到本知识点目标，或学习者明确表示已学完时，再标为“已完成”。不要刚开始就标完成。
+8. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更，不记录项目代码、目录或提交历史的普通变更。同一阶段的多次计划调整可以合并成一条记录，并在单元格内用序号列出。
+9. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料、概念和必要代码片段。
 
-状态枚举：`未开始` / `进行中` / `已完成` / `跳过`
+状态列使用 emoji 记录：`⬜` 表示未开始，`🟡` 表示进行中，`✅` 表示已完成，`⏭️` 表示跳过。
 
 时间格式：`YYYY-MM-DD` 或 `YYYY-MM-DD HH:mm`
 
@@ -111,37 +113,38 @@ uv sync
 1. 明确当前知识点目标
 2. 核对官方资料，确认 API、包名和导入路径
 3. 用中文讲清关键概念，必要时补充 Java 开发者视角类比
-4. 完成该知识点对应的笔记或代码实践
-5. 更新 `.agents/LANGCHAIN_PLAN.md` 中的进度
+4. 由 Codex 整理该知识点对应的知识笔记
+5. 给出代码实践目标、实现步骤、关键片段或待补全骨架，引导学习者亲手写代码
+6. 更新 `.agents/LANGCHAIN_PLAN.md` 中的进度
 ```
 
-可选内容按知识点需要安排，例如：练习题、小任务、常见坑、扩展阅读、对比表、排错记录等。没有实际价值时不要为了形式补齐。
+可选内容按知识点需要安排，例如：小任务、常见坑、扩展阅读、对比表、排错记录等。没有实际价值时不要为了形式补齐；不要把学习过程做成考试题。
 
 ## 7. 知识点总表
 
-| ID | 主题 | 知识点 | 最小目标 | 产出 | 代码实践 | Python 要点 | 状态 | 开始时间 | 完成时间 | 资源 | 备注 |
+| 状态 | ID | 主题 | 知识点 | 最小目标 | 产出 | 代码实践 | Python 要点 | 开始时间 | 完成时间 | 资源 | 备注 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| LC-00 | 项目初始化 | uv、项目结构、Git 规则 | 建好学习仓库 | 初始目录 + README | 初始化项目并首次提交 | venv/uv 与 Maven/Gradle 的区别 | 已完成 | 2026-06-13 | 2026-06-13 | R10 | 已创建 uv 兼容项目骨架；计划迁移到 `.agents/`；依赖改为 PyPI 最新精确版本。 |
-| LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | `notes/01_version_boundary.md` | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 已完成 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
-| LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | `examples/01_hello_agent.py` | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 | 未开始 |  |  | R5 |  |
-| LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `notes/02_core_components.md` | 封装可切换 model 配置 | 环境变量、配置读取 | 未开始 |  |  | R6 |  |
-| LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 | message 示例笔记 | 打印并分析 messages 流 | list/dict、对象属性访问 | 未开始 |  |  | R6 |  |
-| LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 | `examples/02_tools_agent.py` | search + calculator 双工具 agent | docstring、type hints、异常处理 | 未开始 |  |  | R6 |  |
-| LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 | `examples/03_structured_output.py` | 输出 `TaskPlan` / `StudySummary` | Pydantic 类似强类型 DTO | 未开始 |  |  | R6 |  |
-| LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 | runtime 示例 | 在工具中读取上下文 | 参数注入、可选参数 | 未开始 |  |  | R6 |  |
-| LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | middleware 示例 | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 未开始 |  |  | R6 |  |
-| LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 | 上下文策略文档 | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 | 未开始 |  |  | R6 |  |
-| LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | `examples/04_memory.py` | 多轮对话保留上下文 | `with`、资源管理 | 未开始 |  |  | R6 |  |
-| LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | memory 对比笔记 | 存取用户偏好示例 | 数据结构、序列化 | 未开始 |  |  | R6 |  |
-| LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | retrieval demo | 文本切分 + 向量检索 | 文件读写、列表处理 | 未开始 |  |  | R6 |  |
-| LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | `examples/05_rag.py` | 本地文本问答 | pipeline 思维 | 未开始 |  |  | R6,R11 |  |
-| LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | RAG 对比笔记 | 给 agent 增加检索工具 | 控制流、结果校验 | 未开始 |  |  | R6,R11 |  |
-| LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | `examples/06_mcp.py` | 让 agent 调用 MCP server | async/await、客户端生命周期 | 未开始 |  |  | R1,R2,R6 |  |
-| LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | trace 截图/说明 | 记录一次完整 agent trace | 环境变量、SDK 配置 | 未开始 |  |  | R7 |  |
-| LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 | `examples/07_langsmith_eval.py` | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 | 未开始 |  |  | R8 |  |
-| LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | `notes/09_langgraph.md` | Router 或简单 workflow | TypedDict、状态传递 | 未开始 |  |  | R9 |  |
-| LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 | multi-agent 笔记 | 可选 subagent demo | 上下文隔离 | 未开始 |  |  | R6,R9 | 可选 |
-| LC-20 | 综合小项目 | agent + tools + RAG + MCP + tracing/eval | 完成可复盘项目 | mini project | 做一个个人知识库问答 agent | 项目组织、测试、提交 | 未开始 |  |  | R1-R9 |  |
+| ✅ | LC-00 | 项目初始化 | uv、项目结构、Git 规则 | 建好学习仓库 | 初始目录 + README | 初始化项目并首次提交 | venv/uv 与 Maven/Gradle 的区别 | 2026-06-13 | 2026-06-13 | R10 | 已创建 uv 兼容项目骨架；计划迁移到 `.agents/`；依赖改为 PyPI 最新精确版本。 |
+| ✅ | LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | `notes/01_version_boundary.md` | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
+| ⬜ | LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | `examples/01_hello_agent.py` | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 |  |  | R5 | 已清理上次代生成示例，准备重新学习。 |
+| ⬜ | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `notes/02_core_components.md` | 封装可切换 model 配置 | 环境变量、配置读取 |  |  | R6 |  |
+| ⬜ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 | message 示例笔记 | 打印并分析 messages 流 | list/dict、对象属性访问 |  |  | R6 |  |
+| ⬜ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 | `examples/02_tools_agent.py` | search + calculator 双工具 agent | docstring、type hints、异常处理 |  |  | R6 |  |
+| ⬜ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 | `examples/03_structured_output.py` | 输出 `TaskPlan` / `StudySummary` | Pydantic 类似强类型 DTO |  |  | R6 |  |
+| ⬜ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 | runtime 示例 | 在工具中读取上下文 | 参数注入、可选参数 |  |  | R6 |  |
+| ⬜ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | middleware 示例 | 加日志/摘要/人工确认 | 装饰器、函数式组合 |  |  | R6 |  |
+| ⬜ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 | 上下文策略文档 | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 |  |  | R6 |  |
+| ⬜ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | `examples/04_memory.py` | 多轮对话保留上下文 | `with`、资源管理 |  |  | R6 |  |
+| ⬜ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | memory 对比笔记 | 存取用户偏好示例 | 数据结构、序列化 |  |  | R6 |  |
+| ⬜ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | retrieval demo | 文本切分 + 向量检索 | 文件读写、列表处理 |  |  | R6 |  |
+| ⬜ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | `examples/05_rag.py` | 本地文本问答 | pipeline 思维 |  |  | R6,R11 |  |
+| ⬜ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | RAG 对比笔记 | 给 agent 增加检索工具 | 控制流、结果校验 |  |  | R6,R11 |  |
+| ⬜ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | `examples/06_mcp.py` | 让 agent 调用 MCP server | async/await、客户端生命周期 |  |  | R1,R2,R6 |  |
+| ⬜ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | trace 截图/说明 | 记录一次完整 agent trace | 环境变量、SDK 配置 |  |  | R7 |  |
+| ⬜ | LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 | `examples/07_langsmith_eval.py` | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 |  |  | R8 |  |
+| ⬜ | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | `notes/09_langgraph.md` | Router 或简单 workflow | TypedDict、状态传递 |  |  | R9 |  |
+| ⬜ | LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 | multi-agent 笔记 | 可选 subagent demo | 上下文隔离 |  |  | R6,R9 | 可选 |
+| ⬜ | LC-20 | 综合小项目 | agent + tools + RAG + MCP + tracing/eval | 完成可复盘项目 | mini project | 做一个个人知识库问答 agent | 项目组织、测试、提交 |  |  | R1-R9 |  |
 
 ## 8. Python 补充学习索引
 
@@ -161,10 +164,11 @@ uv sync
 每完成一个知识点，至少更新：
 
 ```text
-- 知识点总表：状态、开始时间、完成时间、备注
+- 知识点总表：状态、开始时间、完成时间、备注；不要在刚开始学习时标完成
 - notes/ 对应笔记：本节总结、关键 API、常见坑等；内容可灵活调整
-- examples/ 对应代码：涉及代码实践时应可运行
-- Git：给出一条有意义的建议 commit message；只有用户明确要求时才实际提交
+- examples/ 对应代码：优先由学习者亲手完成；Codex 可提供骨架、提示和代码审阅
+- 测试/验证：默认由学习者执行；Codex 给出命令、预期结果和排错方向
+- Git：只给出一条有意义的建议 commit message；由学习者自行审核并手动提交
 ```
 
 备注只记录阻塞、偏差、关键决策和下次动作，不复述正文。
@@ -185,3 +189,6 @@ uv sync
 | 2026-06-12 | 生成 LangChain 系统学习计划初版 | 全文 |
 | 2026-06-13 | 1. 迁移完整计划到 `.agents/LANGCHAIN_PLAN.md`。<br>2. 锁定 LangChain v1 相关依赖版本。<br>3. 调整建议项目结构，移除根目录 `LANGCHAIN_PLAN.md` 入口文件。<br>4. 将代码注释、Git 提交信息等协作约束收敛到根目录 `AGENTS.md`。 | 文件用途、元信息、环境与命令、建议项目结构、执行说明、LC-00 |
 | 2026-06-13 | 调整学习推进方式：必要动作保留，输出形式按知识点灵活安排；练习题、小任务、常见坑等改为按需补充。 | 执行说明、学习推进协议、学习记录规范 |
+| 2026-06-13 | 调整协作方式：代码实践改为学习者手写为主，Codex 负责讲解、知识笔记、骨架提示、排错引导和进度记录；默认不代写完整实现、不主动跑测试。 | 元信息、执行说明、学习推进协议、学习记录规范、LC-02 |
+| 2026-06-13 | 知识点总表状态列移到最前，改用 Windows emoji 记录；完成状态要求达到知识点目标或学习者明确表示学完，不能刚开始就标完成。 | 执行说明、知识点总表、学习记录规范 |
+| 2026-06-13 | Git 提交流程改为 Codex 只提供建议提交信息，学习者自行审核并手动提交。 | 学习记录规范 |
