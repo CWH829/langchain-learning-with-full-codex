@@ -38,7 +38,7 @@ uv run pytest
 uv run ruff check .
 
 # 运行 LC-02 最小 agent 示例
-uv run python learning/LC-02_minimal_agent/hello_agent.py
+uv run python learning/LC_02_minimal_agent/hello_agent.py
 ```
 
 学习材料按阶段放在 `learning/` 下。每个阶段目录按实际需要收纳代码、笔记、排障记录或数据样例，不强制固定文件模板。
@@ -52,9 +52,10 @@ uv run python learning/LC-02_minimal_agent/hello_agent.py
 │   └── LANGCHAIN_PLAN.md
 ├── deep-research-report.md
 ├── learning/
-│   ├── LC-01_version_boundary/
-│   ├── LC-02_minimal_agent/
-│   └── PY-01_venv_uv/
+│   ├── LC_01_version_boundary/
+│   ├── LC_02_minimal_agent/
+│   ├── LC_03_models/
+│   └── PY_01_venv_uv/
 ├── src/
 │   └── langchain_study/
 ├── tests/

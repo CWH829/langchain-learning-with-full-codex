@@ -69,17 +69,21 @@ uv sync
 ├── src/
 │   └── langchain_study/
 ├── learning/
-│   ├── LC-01_version_boundary/
+│   ├── LC_01_version_boundary/
 │   │   └── version_boundary.md
-│   ├── LC-02_minimal_agent/
+│   ├── LC_02_minimal_agent/
 │   │   ├── hello_agent.py
 │   │   └── minimal_agent.md
-│   └── PY-01_venv_uv/
+│   ├── LC_03_models/
+│   │   ├── model_config_skeleton.py
+│   │   ├── model_config_skeleton.origin.py
+│   │   └── models.md
+│   └── PY_01_venv_uv/
 │       └── venv_uv.md
 └── tests/
 ```
 
-`learning/` 按阶段组织学习材料：`LC-xx_*` 放 LangChain 主线阶段，`PY-xx_*` 放 Python 补充知识。每个阶段目录不强制固定文件名或文件数量，按实际学习内容放置代码、笔记、排障记录、数据样例等。
+`learning/` 按阶段组织学习材料：`LC_xx_*` 放 LangChain 主线阶段，`PY_xx_*` 放 Python 补充知识。目录名使用下划线而不是连字符，便于必要时作为 Python import 路径使用。每个阶段目录不强制固定文件名或文件数量，按实际学习内容放置代码、笔记、排障记录、数据样例等。
 
 ## 5. 资料来源与优先级
 
@@ -118,9 +122,9 @@ uv sync
 | 状态 | ID | 主题 | 知识点 | 最小目标 | 产出 | 代码实践 | Python 要点 | 开始时间 | 完成时间 | 资源 | 备注 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | ✅ | LC-00 | 项目初始化 | uv、项目结构、Git 规则 | 建好学习仓库 | 初始目录 + README | 初始化项目并首次提交 | venv/uv 与 Maven/Gradle 的区别 | 2026-06-13 | 2026-06-13 | R10 | 已创建 uv 兼容项目骨架；计划迁移到 `.agents/`；依赖改为 PyPI 最新精确版本。 |
-| ✅ | LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | `learning/LC-01_version_boundary/version_boundary.md` | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
-| ✅ | LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | `learning/LC-02_minimal_agent/hello_agent.py`、`learning/LC-02_minimal_agent/minimal_agent.md` | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 | 2026-06-13 | 2026-06-13 | R5 | 已跑通最小 agent invoke 和工具调用；环境切到 Python 3.12 + uv；因 OpenAI API 额度不足，改用 DeepSeek OpenAI-compatible API，并补充 `langchain-openai` 依赖。 |
-| 🟡 | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `learning/LC-03_models/models.md`、`learning/LC-03_models/model_config_skeleton.py` | 封装可切换 model 配置 | 环境变量、配置读取 | 2026-06-13 |  | R6 | 已核对官方 Models 与 ChatOpenAI integration 文档；本阶段先整理概念、参数和可手写骨架，等待学习者补全实践代码。 |
+| ✅ | LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | `learning/LC_01_version_boundary/version_boundary.md` | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
+| ✅ | LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | `learning/LC_02_minimal_agent/hello_agent.py`、`learning/LC_02_minimal_agent/minimal_agent.md` | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 | 2026-06-13 | 2026-06-13 | R5 | 已跑通最小 agent invoke 和工具调用；环境切到 Python 3.12 + uv；因 OpenAI API 额度不足，改用 DeepSeek OpenAI-compatible API，并补充 `langchain-openai` 依赖。 |
+| ✅ | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `learning/LC_03_models/models.md`、`learning/LC_03_models/model_config_skeleton.py` | 封装可切换 model 配置 | 环境变量、配置读取 | 2026-06-13 | 2026-06-14 | R6 | 已核对官方 Models 与 ChatOpenAI integration 文档；学习者已补全模型配置骨架，使用 `python-dotenv` 加载本地环境变量，并通过 DeepSeek OpenAI-compatible API 成功调用模型获得响应。 |
 | ⬜ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 |  | 打印并分析 messages 流 | list/dict、对象属性访问 |  |  | R6 |  |
 | ⬜ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 |  | search + calculator 双工具 agent | docstring、type hints、异常处理 |  |  | R6 |  |
 | ⬜ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 |  | 输出 `TaskPlan` / `StudySummary` | Pydantic 类似强类型 DTO |  |  | R6 |  |
@@ -143,7 +147,7 @@ uv sync
 
 | 状态 | ID | 主题 | 触发场景 | 学习目标 | 备注 |
 | --- | --- | --- | --- | --- | --- |
-| ✅ | PY-01 | venv / uv | 初始化项目、LC-02 环境排障 | 理解 Python 依赖隔离 | 已整理 `learning/PY-01_venv_uv/venv_uv.md`；LC-00 阶段完成 uv/venv 基础概念，LC-02 阶段实际解决 uv 安装、Python 3.12 虚拟环境、依赖同步和 PyCharm 解释器配置问题。 |
+| ✅ | PY-01 | venv / uv | 初始化项目、LC-02 环境排障 | 理解 Python 依赖隔离 | 已整理 `learning/PY_01_venv_uv/venv_uv.md`；LC-00 阶段完成 uv/venv 基础概念，LC-02 阶段实际解决 uv 安装、Python 3.12 虚拟环境、依赖同步和 PyCharm 解释器配置问题。 |
 | ⬜ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | Python 不像 Java 默认强制运行时类型 |
 | ⬜ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 类似 DTO/POJO |
 | ⬜ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 类似注解但执行机制不同 |
@@ -191,3 +195,4 @@ uv sync
 | 2026-06-13 | 调整 Git 记录规范表述：提供建议提交信息和改动摘要，学习者自行手动提交。 | 学习记录规范 |
 | 2026-06-13 | 增加新阶段启动前确认规则：涉及资料检索、官方文档核对、知识点整理、文件生成等操作前，Codex 先提醒学习者确认智能程度为“高”，等待回复后再继续。 | 执行说明、协作约束 |
 | 2026-06-13 | 增加 Python 手写骨架 origin 副本规则：创建骨架文件时可同步保留最初始副本，便于未来复用或对照。 | 执行说明、协作约束 |
+| 2026-06-14 | 调整 `learning/` 阶段目录命名：将 `LC-xx_*`、`PY-xx_*` 改为 `LC_xx_*`、`PY_xx_*`，避免连字符影响 Python import。 | 建议项目结构、知识点总表、Python 补充学习索引 |

@@ -61,7 +61,7 @@ uv add langchain-openai
 运行项目脚本：
 
 ```powershell
-uv run python learning/LC-02_minimal_agent/hello_agent.py
+uv run python learning/LC_02_minimal_agent/hello_agent.py
 ```
 
 确认当前项目虚拟环境里的 Python：
