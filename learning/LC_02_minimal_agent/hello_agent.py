@@ -10,20 +10,19 @@
 - 按你选择的模型 provider 安装对应集成包并配置 API key。
 """
 
-import os
-
 from langchain.agents import create_agent
-from langchain_openai import ChatOpenAI
+from learning.LC_03_models.model_config_skeleton import build_chat_model
 
-MODEL = "deepseek-v4-flash"
-
-
+# 原 LC-02 写法：
+# import os
+# from langchain_openai import ChatOpenAI
+# MODEL = "deepseek-v4-flash"
 # MODEL = "openai:gpt-4.1-mini"
 
 
 def get_weather(city: str) -> str:
     """返回指定城市的模拟天气。"""
-    # TODO: 亲手补全这个工具函数。
+    # 亲手补全这个工具函数。
     # 提示：可以先不用真实天气 API，直接根据 city 返回一段固定中文文本。
     # 例如：如果 city 是“北京”，返回“北京今天晴，适合散步。”
     # raise NotImplementedError("请先补全 get_weather 工具函数")
@@ -35,14 +34,18 @@ def get_weather(city: str) -> str:
 
 def build_agent():
     """创建最小 agent。"""
-    # TODO: 把 model 改成你当前可用的模型。
+    # 把 model 改成你当前可用的模型。
     # 官方 v1 写法支持直接传模型字符串，例如 "openai:gpt-5.4-mini"；
     # 也可以后续学习 LC-03 时再改成 `init_chat_model(...)`。
-    model = ChatOpenAI(
-        model=MODEL,
-        api_key=os.environ["DEEPSEEK_API_KEY"],
-        base_url="https://api.deepseek.com",
-    )
+    # model = ChatOpenAI(
+    #     model=MODEL,
+    #     api_key=os.environ["DEEPSEEK_API_KEY"],
+    #     base_url="https://api.deepseek.com",
+    # )
+
+    # 使用LC-03的模型配置骨架来创建模型实例
+    model = build_chat_model()
+
     return create_agent(
         model=model,
         tools=[get_weather],
@@ -62,7 +65,6 @@ def main() -> None:
         print(message.content)
         print("-" * 40)
 
-    # print(f"最小接收回答：{result["messages"][-1].content}")
 
 if __name__ == "__main__":
     main()

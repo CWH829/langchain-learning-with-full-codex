@@ -61,7 +61,6 @@ def load_model_settings() -> ModelSettings:
 
 def build_chat_model():
     """根据配置创建 chat model。
-    TODO：
     1. 调用 `load_model_settings()`。
     2. 再从 `settings.api_key_env` 指向的环境变量读取真实 API key。
     3. 使用 `from langchain.chat_models import init_chat_model`。
@@ -71,6 +70,8 @@ def build_chat_model():
     import os
     from langchain.chat_models import init_chat_model
     # from langchain.agents import create_agent   #上次用的是这个api
+    from dotenv import load_dotenv
+    load_dotenv()  # 从 .env 文件加载环境变量，方便本地开发。
 
     model_setting = load_model_settings()
 
@@ -95,8 +96,7 @@ def main() -> None:
     2. 用 `model.invoke(...)` 问一个一句话问题。
     3. 打印返回消息的文本内容。
     """
-    from dotenv import load_dotenv
-    load_dotenv()   # 从 .env 文件加载环境变量，方便本地开发。
+
 
     model = build_chat_model()
     response = model.invoke("你好")

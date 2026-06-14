@@ -154,6 +154,7 @@ DEEPSEEK_API_KEY=你的 key
 5. 用 `build_chat_model()` 读取真实 API key，并通过 `init_chat_model(...)` 创建 LangChain chat model。
 6. 用 `python-dotenv` 在本地开发时加载 `.env`，避免把真实 key 写入代码。
 7. 已实际调用 DeepSeek 模型并得到响应，说明 provider、model、base URL、API key、依赖安装和网络调用链路都已经跑通。
+8. LC-02 已通过 `import build_chat_model` 复用本阶段的模型创建方法，agent 不再需要在 `build_agent()` 中直接创建 `ChatOpenAI`。
 
 这一步的意义不只是“能调用模型”，而是开始把模型当成一个可替换的运行时依赖。后面 LC-04 Messages、LC-05 Tools、LC-06 Structured Output 都可以复用这个模型创建思路。
 

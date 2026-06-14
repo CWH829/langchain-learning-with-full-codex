@@ -28,21 +28,6 @@ uv sync
 
 如需配置模型或 LangSmith key，可从 `.env.example` 复制并按当前学习任务补充。
 
-## 常用命令
-
-```bash
-# 运行测试
-uv run pytest
-
-# 运行 ruff 检查
-uv run ruff check .
-
-# 运行 LC-02 最小 agent 示例
-uv run python learning/LC_02_minimal_agent/hello_agent.py
-```
-
-学习材料按阶段放在 `learning/` 下。每个阶段目录按实际需要收纳代码、笔记、排障记录或数据样例，不强制固定文件模板。
-
 ## 目录结构
 
 ```text
@@ -62,6 +47,8 @@ uv run python learning/LC_02_minimal_agent/hello_agent.py
 ├── .env.example
 └── pyproject.toml
 ```
+
+学习材料按阶段放在 `learning/` 下。每个阶段目录按实际需要收纳代码、笔记、排障记录或数据样例，不强制固定文件模板。
 
 ## 学习推进
 
