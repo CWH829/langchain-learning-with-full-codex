@@ -21,20 +21,20 @@
 ## 2. Codex Agent 执行说明
 
 1. 先读本文件，找到“知识点总表”中第一条状态为“未开始”或“进行中”的任务。
-2. 开始新阶段学习时，如果即将进行资料检索、官方文档核对、知识点整理、文件生成等操作，Codex 必须先提醒学习者确认当前智能程度为“高”，并等待学习者回复后再继续执行。
+2. 开始新阶段学习时，必须先提醒学习者确认当前智能程度为“高”，等待学习者回复后再继续执行；学习结束后补充完善学习文档前，也需要同样提醒并等待确认。
 3. 学习每个知识点前，优先检索官方文档，确认 API、包名、导入路径未过时。
-4. 每个知识点按实际内容灵活推进；必要动作包括：确认官方资料、用中文讲清关键概念、整理知识笔记、引导学习者完成代码实践、学习后在文档中补充实践记录或总结、更新进度记录。也可以看情况丰富一些扩展知识、常见注意点。练习题、小任务、常见坑等内容在对当前知识点有实际帮助时补充，不作为固定模板。
-5. 代码以 Python 为主；遇到 Python 语法、项目结构、依赖管理、异步、类型标注等内容时，面向 Java 开发者补充说明。
-6. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
-7. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
-8. 代码有问题时，Codex 先引导学习者自己改；知识笔记和总结可主动整理。
-9. 开始或推进某个知识点时先标为“进行中”；达到本知识点目标，或学习者明确表示已学完时，再标为“已完成”。不要刚开始就标完成。
-10. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更，不记录项目代码、目录或提交历史的普通变更。同一阶段的多次计划调整可以合并成一条记录，并在单元格内用序号列出。
+4. 每个知识点按实际内容灵活推进，可参考这些动作规划：官方核对、概念讲解、整理知识笔记、引导代码实践、排错记录、阶段总结、进度更新等。
+5. 学习文档生成时应尽量完整、丰富，尽量覆盖当前知识点的关键细节和要点；阶段完成后可结合实践结果继续补充完善，如知识细节、实践记录、排错记录和总结等。
+6. 代码以 Python 为主；遇到 Python 特殊语法、特色功能、特性等内容时，按实际需要在学习文档或代码注释中简单解释。
+7. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
+8. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
+9. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
+10. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；注意，该表只记录计划本身的变更。
 11. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料、概念和必要代码片段。
 
 状态列使用 emoji 记录：`⬜` 表示未开始，`🟡` 表示进行中，`✅` 表示已完成，`⏭️` 表示跳过。
 
-时间格式：`YYYY-MM-DD` 或 `YYYY-MM-DD HH:mm`
+时间格式规定：`YYYY-MM-DD HH:mm`
 
 ## 3. 环境与命令
 
@@ -104,18 +104,19 @@ uv sync
 
 ## 6. 学习推进协议
 
-每个知识点不强制套用固定输出模板，但至少覆盖这些必要动作：
+每个知识点不强制套用固定模板，可按实际内容参考以下节奏：
 
 ```text
 1. 明确当前知识点目标
-2. 核对官方资料，确认 API、包名和导入路径
-3. 用中文讲清关键概念，必要时补充 Java 开发者视角类比
-4. 由 Codex 整理该知识点对应的知识笔记
-5. 给出代码实践目标、实现步骤、关键片段或待补全骨架，引导学习者亲手写代码
-6. 更新 `.agents/LANGCHAIN_PLAN.md` 中的进度
+2. 核对官方资料
+3. 讲清关键概念并整理学习文档
+4. 给出手写实践目标、步骤、片段或骨架
+5. 引导排错并记录有价值的问题
+6. 学习结束后补充知识细节、实践记录和总结
+7. 更新学习计划进度
 ```
 
-可选内容按知识点需要安排，例如：小任务、常见坑、扩展阅读、对比表、排错记录等。没有实际价值时不要为了形式补齐；不要把学习过程做成考试题。
+具体执行约束以“Codex Agent 执行说明”为准。
 
 ## 7. 知识点总表
 
@@ -125,9 +126,9 @@ uv sync
 | ✅ | LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | `learning/LC_01_version_boundary/version_boundary.md` | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
 | ✅ | LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | `learning/LC_02_minimal_agent/hello_agent.py`、`learning/LC_02_minimal_agent/minimal_agent.md` | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 | 2026-06-13 | 2026-06-13 | R5 | 已跑通最小 agent invoke 和工具调用；环境切到 Python 3.12 + uv；因 OpenAI API 额度不足，改用 DeepSeek OpenAI-compatible API，并补充 `langchain-openai` 依赖。 |
 | ✅ | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `learning/LC_03_models/models.md`、`learning/LC_03_models/model_config_skeleton.py` | 封装可切换 model 配置 | 环境变量、配置读取 | 2026-06-13 | 2026-06-14 | R6 | 已核对官方 Models 与 ChatOpenAI integration 文档；学习者已补全模型配置骨架，使用 `python-dotenv` 加载本地环境变量，并通过 DeepSeek OpenAI-compatible API 成功调用模型获得响应。 |
-| ⬜ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 |  | 打印并分析 messages 流 | list/dict、对象属性访问 |  |  | R6 |  |
+| ✅ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 | `learning/LC_04_messages/messages.md`、`learning/LC_04_messages/message_flow_skeleton.py` | 打印并分析 messages 流 | list/dict、对象属性访问 | 2026-06-14 | 2026-06-14 17:20 | R6 | 已补全 message 流分析骨架，能构造 `SystemMessage` / `HumanMessage`，调用模型并观察 `AIMessage` 的 `content`、`text`、`content_blocks`、`usage_metadata` 等字段；阶段文档已补充知识细节和实践复盘。 |
 | ⬜ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 |  | search + calculator 双工具 agent | docstring、type hints、异常处理 |  |  | R6 |  |
-| ⬜ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 |  | 输出 `TaskPlan` / `StudySummary` | Pydantic 类似强类型 DTO |  |  | R6 |  |
+| ⬜ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 |  | 输出 `TaskPlan` / `StudySummary` | Pydantic 数据模型与字段校验 |  |  | R6 |  |
 | ⬜ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 |  | 在工具中读取上下文 | 参数注入、可选参数 |  |  | R6 |  |
 | ⬜ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 |  | 加日志/摘要/人工确认 | 装饰器、函数式组合 |  |  | R6 |  |
 | ⬜ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 |  | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 |  |  | R6 |  |
@@ -148,27 +149,25 @@ uv sync
 | 状态 | ID | 主题 | 触发场景 | 学习目标 | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | ✅ | PY-01 | venv / uv | 初始化项目、LC-02 环境排障 | 理解 Python 依赖隔离 | 已整理 `learning/PY_01_venv_uv/venv_uv.md`；LC-00 阶段完成 uv/venv 基础概念，LC-02 阶段实际解决 uv 安装、Python 3.12 虚拟环境、依赖同步和 PyCharm 解释器配置问题。 |
-| ⬜ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | Python 不像 Java 默认强制运行时类型 |
-| ⬜ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 类似 DTO/POJO |
-| ⬜ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 类似注解但执行机制不同 |
-| ⬜ | PY-05 | with | memory / client / file | 理解上下文管理器 | 类似 try-with-resources |
-| ⬜ | PY-06 | async/await | MCP / async invoke | 能读懂异步调用 | 对比 CompletableFuture 但语法不同 |
+| ⬜ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 理解类型标注与运行时校验不是一回事 |
+| ⬜ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 理解数据模型、校验和序列化基础 |
+| ⬜ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 关注函数包装、注册和调用时机 |
+| ⬜ | PY-05 | with | memory / client / file | 理解上下文管理器 | 关注资源进入、退出和异常清理 |
+| ⬜ | PY-06 | async/await | MCP / async invoke | 能读懂异步调用 | 关注事件循环、协程和异步资源生命周期 |
 | ⬜ | PY-07 | list/dict comprehension | 数据处理 | 能读懂简洁表达式 | 不必一开始强记 |
 | ⬜ | PY-08 | pytest | eval / tests | 能写最小测试 | 后续项目化需要 |
 
 ## 9. 学习记录规范
 
-每完成一个知识点，至少更新：
+学习记录只记录有复盘价值的信息，执行规则以第 2 节和第 6 节为准。每完成或阶段性推进一个知识点时，按实际情况更新：
 
 ```text
-- 知识点总表：状态、开始时间、完成时间、备注；不要在刚开始学习时标完成
-- `learning/` 对应阶段目录：本节总结、关键 API、常见坑、代码实践、排障记录等按实际需要放置，不强制固定文件模板
-- 阶段代码优先由学习者亲手完成；Codex 可提供骨架、提示和代码审阅
-- 测试/验证：默认由学习者执行；Codex 给出命令、预期结果和排错方向
-- Git：完成阶段性改动后，只提供建议提交信息和本次改动摘要，由学习者自行手动提交.
+- 知识点总表：状态、开始时间、完成时间、产出路径、关键备注
+- `learning/` 对应阶段目录：学习文档、手写骨架、origin 副本、实践记录、排错记录、阶段总结等
+- 学习文档：尽量沉淀为可复习材料，覆盖核心概念、关键 API、字段/参数细节、常见坑和实践结论等
+- 备注：只记录阻塞、偏差、关键决策和下次动作，不复述正文
+- Git：完成阶段性改动后，记录本次改动摘要，并只提供建议提交信息
 ```
-
-备注只记录阻塞、偏差、关键决策和下次动作，不复述正文。
 
 ## 10. 完成标准
 
@@ -196,3 +195,8 @@ uv sync
 | 2026-06-13 | 增加新阶段启动前确认规则：涉及资料检索、官方文档核对、知识点整理、文件生成等操作前，Codex 先提醒学习者确认智能程度为“高”，等待回复后再继续。 | 执行说明、协作约束 |
 | 2026-06-13 | 增加 Python 手写骨架 origin 副本规则：创建骨架文件时可同步保留最初始副本，便于未来复用或对照。 | 执行说明、协作约束 |
 | 2026-06-14 | 调整 `learning/` 阶段目录命名：将 `LC-xx_*`、`PY-xx_*` 改为 `LC_xx_*`、`PY_xx_*`，避免连字符影响 Python import。 | 建议项目结构、知识点总表、Python 补充学习索引 |
+| 2026-06-14 | 1. 取消默认 Java 视角类比，后续讲解聚焦 LangChain 与 Python 学习主题本身。<br>2. 明确阶段文档策略：生成时尽量完整、丰富，覆盖当前知识点关键细节；阶段完成后结合实践继续补全为可复习的完整知识文档，而不只是追加实践记录或总结。<br>3. 学习推进动作改为参考项，由 Codex 按实际内容灵活判断和规划。 | 元信息、执行说明、学习推进协议、Python 补充学习索引、学习记录规范 |
+| 2026-06-14 | 补充智能程度确认规则：学习结束后补充完善学习文档前，也需要提醒学习者确认当前智能程度为“高”并等待回复。 | 执行说明 |
+| 2026-06-14 | 按新版执行说明调整“学习推进协议”：补充阶段开始和学习结束补文档前的智能程度确认，强调文档完整性、Python 按需解释、手写实践和排错引导。 | 学习推进协议 |
+| 2026-06-14 | 简化“学习推进协议”：第 2 节保留硬性执行约束，第 6 节只保留知识点推进节奏，避免两处重复维护同一套规则。 | 学习推进协议 |
+| 2026-06-14 | 调整“学习记录规范”：聚焦记录内容和复盘价值，不再重复代码实践、测试验证等执行约束。 | 学习记录规范 |
