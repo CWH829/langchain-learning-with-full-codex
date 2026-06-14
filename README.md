@@ -32,20 +32,20 @@ uv sync
 
 ```text
 .
-├── AGENTS.md
+├── AGENTS.md                    # Codex 协作约束
 ├── .agents/
-│   └── LANGCHAIN_PLAN.md
-├── deep-research-report.md
-├── learning/
-│   ├── LC_01_version_boundary/
-│   ├── LC_02_minimal_agent/
-│   ├── LC_03_models/
-│   └── PY_01_venv_uv/
+│   └── LANGCHAIN_PLAN.md        # LangChain 学习路线和进度记录
+├── deep-research-report.md      # 学习计划形成前的资料调研
+├── learning/                    # 阶段学习材料（包括代码、知识点文档、笔记等）
+│   ├── LC_01_version_boundary/  # LC-01：版本边界
+│   ├── LC_02_minimal_agent/     # LC-02：最小 agent
+│   ├── LC_03_models/            # LC-03：Models
+│   └── PY_01_venv_uv/           # PY-01：venv / uv
 ├── src/
-│   └── langchain_study/
-├── tests/
-├── .env.example
-└── pyproject.toml
+│   └── langchain_study/         # 后续可复用的正式项目代码
+├── tests/                      
+├── .env.example                 
+└── pyproject.toml               
 ```
 
 学习材料按阶段放在 `learning/` 下。每个阶段目录按实际需要收纳代码、笔记、排障记录或数据样例，不强制固定文件模板。
