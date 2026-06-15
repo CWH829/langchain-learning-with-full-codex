@@ -8,7 +8,8 @@
 
 from __future__ import annotations
 
-from langchain.messages import AIMessage, HumanMessage, SystemMessage
+from langchain.messages import AIMessage, HumanMessage, SystemMessage   # 核心
+
 from langchain_core.messages import BaseMessage
 
 from learning.LC_03_models.model_config_skeleton import build_chat_model

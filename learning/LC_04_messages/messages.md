@@ -101,6 +101,51 @@ print(response.usage_metadata)
 print(response.response_metadata)
 ```
 
+### `agent.invoke({"messages": [...]})` 和 `model.invoke(messages)` 的区别
+
+LC-02 里出现过这样的写法：
+
+```python
+result = agent.invoke(
+    {"messages": [{"role": "user", "content": "北京今天适合跑步吗？"}]}
+)
+```
+
+它和本节的 `model.invoke(messages)` 容易混在一起，但含义不同：
+
+| 写法 | 调用对象 | 输入形状 | 返回值重点 |
+| --- | --- | --- | --- |
+| `model.invoke(messages)` | chat model | 直接传 message 列表 | 返回一条 `AIMessage` |
+| `agent.invoke({"messages": [...]})` | agent | 传一个包含 `messages` 的状态 dict | 返回包含完整消息流的 dict |
+
+原因是 agent 比 model 多一层运行循环。model 只需要“当前上下文消息列表”，然后生成下一条回复；agent 还要管理工具调用、工具结果、可能的多轮推理和最终回答，因此输入和输出都更像“状态对象”。
+
+因此不要把 model 的字符串便利写法套到 agent 上：
+
+```python
+model.invoke("你好")  # 支持
+agent.invoke("你好")  # 不支持
+```
+
+在当前项目的 `langchain==1.3.9` 中，`agent.invoke("你好")` 会因为输入不是 dict 状态而报错。agent 的最小输入仍然应该写成：
+
+```python
+agent.invoke({"messages": [{"role": "user", "content": "你好"}]})
+```
+
+这里的 `"messages"` 不是随便起的参数名，而是 LangChain agent 状态里的核心字段。它的值是一组消息，可以写成 dict：
+
+```python
+{"role": "user", "content": "北京今天适合跑步吗？"}
+```
+
+也可以在更明确的场景中使用 `HumanMessage`、`SystemMessage` 等对象。学习阶段看到 dict 写法时，可以先把它读成：
+
+```text
+role=user -> 这是一条用户消息
+content=... -> 这条用户消息的文本内容
+```
+
 ## content 与 content_blocks
 
 可以先用一句话区分：

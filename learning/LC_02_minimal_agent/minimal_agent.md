@@ -35,6 +35,44 @@ agent.invoke(
 )
 ```
 
+这段写法可以拆成两层看：
+
+```python
+{
+    "messages": [
+        {"role": "user", "content": "北京今天适合跑步吗？"}
+    ]
+}
+```
+
+外层的 dict 是 agent 的输入状态。`create_agent(...)` 创建出来的 agent 不只关心一条 prompt，它内部还要维护消息流、工具调用、中间结果、最终回答等状态，所以输入通常用 dict 表达。
+
+`"messages"` 是其中最核心的字段，表示这次交给 agent 的对话消息列表。列表里的每一项是一条消息，可以先用这种 dict 形式写：
+
+| 字段 | 含义 |
+| --- | --- |
+| `role` | 消息角色，例如 `user` 表示用户输入 |
+| `content` | 消息内容，也就是用户真正问的问题 |
+
+所以这句代码的意思不是“传一个叫 messages 的普通参数”，而是：
+
+```text
+把一组对话消息作为 agent 当前输入状态交给 LangChain 执行。
+```
+
+最小阶段先记住两点：
+
+- 调 agent 时，常用 `agent.invoke({"messages": [...]})`。
+- 看结果时，也常从 `result["messages"]` 里取最终消息或中间消息。
+
+注意：`create_agent(...)` 创建出来的 agent 不支持像 chat model 一样直接传字符串：
+
+```python
+agent.invoke("你好")  # 不支持
+```
+
+在当前项目锁定的 `langchain==1.3.9` 中，这种写法会报类似 `Expected dict, got hi` 的错误。也就是说，字符串直传是 `model.invoke(...)` 的便利写法，不是 `agent.invoke(...)` 的输入格式。
+
 ## 核心概念
 
 `create_agent` 像一个高层工厂方法。它帮你把模型、工具和运行循环组装起来。你不需要在 LC-02 手写“模型先判断、再调用工具、再继续回答”的循环，LangChain 会负责这部分。

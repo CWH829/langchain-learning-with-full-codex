@@ -10,12 +10,13 @@
 - 按你选择的模型 provider 安装对应集成包并配置 API key。
 """
 
-from langchain.agents import create_agent
+from langchain.agents import create_agent   # 核心
+
 from learning.LC_03_models.model_config_skeleton import build_chat_model
 
 # 原 LC-02 写法：
 # import os
-# from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI
 # MODEL = "deepseek-v4-flash"
 # MODEL = "openai:gpt-4.1-mini"
 

@@ -7,9 +7,11 @@
 """
 
 from __future__ import annotations  # 改变解释器处理类型注解的方式。让类型注解延迟求值
-
 from dataclasses import dataclass   # 快速定义“只用来装数据的类”——DTO
 from typing import Literal  # 类型标注工具——变量只能是某几个固定值
+
+
+from langchain.chat_models import init_chat_model   # 核心
 
 Provider = Literal["openai"]    # 只能是openai值
 
@@ -68,7 +70,6 @@ def build_chat_model():
     """
 
     import os
-    from langchain.chat_models import init_chat_model
     # from langchain.agents import create_agent   #上次用的是这个api
     from dotenv import load_dotenv
     load_dotenv()  # 从 .env 文件加载环境变量，方便本地开发。
