@@ -16,7 +16,7 @@
 | 学习方式 | 问答讲解 + 学习者手写 Python 代码实践 + Codex 整理知识笔记与 Git 记录 |
 | 学习时长 | 未指定 |
 | 学习深度 | 先达到能独立完成 agent、RAG、MCP、trace/eval 小项目 |
-| 更新时间 | 2026-06-13 |
+| 更新时间 | 2026-06-15 |
 
 ## 2. Codex Agent 执行说明
 
@@ -25,13 +25,15 @@
 3. 学习每个知识点前，优先检索官方文档，确认 API、包名、导入路径未过时。
 4. 每个知识点按实际内容灵活推进，可参考这些动作规划：官方核对、概念讲解、整理知识笔记、引导代码实践、排错记录、阶段总结、进度更新等。
 5. 学习文档生成时应尽量完整、丰富，尽量覆盖当前知识点的关键细节和要点；文档结构和写法可按当前知识点灵活调整，不必严格沿用上一阶段文档风格和结构，适当参考即可；
-6. 学习完成后，先检查一下代码情况，有没有问题以及可以优化的地方；然后可结合实践结果继续补充完善，如知识细节、实践记录、排错记录和总结等。
-7. 代码以 Python 为主；遇到 Python 特殊语法、特色功能、特性等内容时，按实际需要在学习文档或代码注释中简单解释。
-8. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
-9. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
-10. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
-11. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；注意，该表只记录计划本身的变更。
-12. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料、概念和必要代码片段。
+6. 知识点默认不强行套 Java 视角；如果某个概念确实非常适合用 Java 类比帮助理解，可以在句末用括号简单补充，例如：`Python 装饰器（类似 Java 的 AOP）`；目的只是用于理解记忆，不要过分严谨的做对比。
+7. 学习完成后，先检查一下代码情况：不仅要检查代码有没有明显问题和可优化处，也要对照当前实践任务检查关键练习点是否都已覆盖、是否有遗漏.
+8. 学习完成后，可结合实践过程和结果，补充学习文档，如知识细节、实践记录、排错记录和总结等。
+9. 代码以 Python 为主；遇到 Python 特殊语法、特色功能、特性等内容时，按实际需要在学习文档或代码注释中简单解释。
+10. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
+11. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
+12. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
+13. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；注意，该表只记录计划本身的变更。
+14. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料、概念和必要代码片段。
 
 状态列使用 emoji 记录：`⬜` 表示未开始，`🟡` 表示进行中，`✅` 表示已完成，`⏭️` 表示跳过。
 
@@ -131,7 +133,7 @@ uv sync
 | ✅ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 | `learning/LC_05_tools/tools.md`、`learning/LC_05_tools/tool_calling_skeleton.py` | search + calculator 双工具 agent | docstring、type hints、异常处理 | 2026-06-14 17:42 | 2026-06-15 10:57 | R6 | 学习者已补全 `search_notes` 和 `calculator` 双工具实践，观察了 `model.bind_tools(...)` 的 `tool_calls` 和 `agent.invoke(...)` 的自动工具调用流程；阶段文档已补充实践复盘、关键问题和总结。 |
 | ✅ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 | `learning/LC_06_structured_output/structured_output.md`、`learning/LC_06_structured_output/structured_output_skeleton.py` | 输出 `TaskPlan` / `StudySummary` | Pydantic 数据模型与字段校验 | 2026-06-15 11:48 | 2026-06-15 15:23 | R6 | 学习者已补全 `TaskPlan` 和 `StudySummary` 两套 Pydantic schema，观察了 `response_format=TaskPlan`、`ToolStrategy(StudySummary)`、`structured_response` 与 `model_dump()`；已记录 DeepSeek V4 Pro thinking mode 与 `tool_choice` 冲突，并通过关闭 thinking 解决。 |
 | ✅ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 | `learning/LC_07_runtime/runtime.md`、`learning/LC_07_runtime/runtime_context_skeleton.py` | 在工具中读取上下文 | 参数注入、可选参数 | 2026-06-15 16:07 | 2026-06-15 19:05 | R6 | 学习者已补全 runtime context 实践，理解 `context_schema`、`agent.invoke(..., context=...)`、工具中的 `ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录 `InvalidUpdateError: Expected dict` 的排错过程。 |
-| ⬜ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 |  | 加日志/摘要/人工确认 | 装饰器、函数式组合 |  |  | R6 |  |
+| 🟡 | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | `learning/LC_08_middleware/middleware.md`、`learning/LC_08_middleware/middleware_skeleton.py` | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 2026-06-15 19:19 |  | R6 | 已核对官方 Middleware、Custom middleware、Prebuilt middleware 和 Human-in-the-loop 文档；已创建阶段文档与手写骨架，待学习者补全 logging / HITL / summarization 实践。 |
 | ⬜ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 |  | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 |  |  | R6 |  |
 | ⬜ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 |  | 多轮对话保留上下文 | `with`、资源管理 |  |  | R6 |  |
 | ⬜ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 |  | 存取用户偏好示例 | 数据结构、序列化 |  |  | R6 |  |
@@ -202,3 +204,5 @@ uv sync
 | 2026-06-14 | 简化“学习推进协议”：第 2 节保留硬性执行约束，第 6 节只保留知识点推进节奏，避免两处重复维护同一套规则。 | 学习推进协议 |
 | 2026-06-14 | 调整“学习记录规范”：聚焦记录内容和复盘价值，不再重复代码实践、测试验证等执行约束。 | 学习记录规范 |
 | 2026-06-14 17:58 | 补充学习文档生成规则：阶段文档不必严格沿用上一阶段风格和结构，可按当前知识点灵活调整，适当参考即可。 | 执行说明 |
+| 2026-06-15 21:02 | 调整讲解风格约束：默认不强行套 Java 视角，但当概念确实适合类比时，可在句末括号中补充简短 Java 类比。 | 执行说明 |
+| 2026-06-15 23:26 | 补充学习完成后的代码检查规则：除检查代码问题和优化点外，还要对照当前实践任务检查关键练习点是否都已覆盖、是否有遗漏。 | 执行说明 |

@@ -1,4 +1,14 @@
-# AGENTS.md
+# Repository Guidelines
+
+## 项目结构与模块组织
+
+本仓库是面向 Python 3.11 的 LangChain 学习项目，项目的重点目录为 `.agents/` 和 `learning/`。
+其中`.agents/LANGCHAIN_PLAN.md` 是项目核心文件，即 LangChain 学习计划文档；
+`learning/` 是学习过程的产物目录，用于沉淀各阶段的笔记、代码等。
+
+## 学习计划
+
+- 涉及 LangChain 学习路线、知识点推进、进度记录或任务拆分时，阅读 `.agents/LANGCHAIN_PLAN.md`，并按其中“Codex Agent 执行说明”推进。
 
 ## 核心约束
 
@@ -9,6 +19,3 @@
 - 改动代码时遵循最小改动原则，尽量不要改写用户已经写好的代码；如果确实认为重构或替换更好，先说明原因并询问用户意见。必须修改原代码时，优先原样注释保留旧写法。
 - 在 PowerShell 中读取仓库内中文文档、计划文件或目录内容时，优先设置 UTF-8 输出并显式指定 UTF-8 编码，避免中文乱码影响判断。
 
-## 学习计划
-
-- 涉及 LangChain 学习路线、知识点推进、进度记录或任务拆分时，阅读 `.agents/LANGCHAIN_PLAN.md`，并按其中“Codex Agent 执行说明”推进。

@@ -30,7 +30,7 @@ def search_notes(query: str) -> str:
     # 1. 遍历 STUDY_NOTES。
     # 2. 如果 query 命中 key 或 value，就返回对应内容。
     # 3. 如果没有命中，返回“没有找到相关学习笔记：xxx”。
-    if not query:
+    if not query or not query.strip():
         return "无参数"
 
     normalized_query = query.strip().lower()
