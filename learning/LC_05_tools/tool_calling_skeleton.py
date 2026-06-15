@@ -33,8 +33,18 @@ def search_notes(query: str) -> str:
     if not query:
         return "无参数"
 
-    if query in STUDY_NOTES:
-        return STUDY_NOTES[query]
+    normalized_query = query.strip().lower()
+
+    for topic, note in STUDY_NOTES.items():
+        normalized_topic = topic.lower()
+        normalized_note = note.lower()
+
+        if (
+                normalized_query in normalized_topic
+                or normalized_query in normalized_note
+                or normalized_topic in normalized_query
+        ):
+            return f"{topic}: {note}"
 
     return f"没有找到相关学习笔记：{query}"
 
