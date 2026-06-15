@@ -150,7 +150,7 @@ uv sync
 | 状态 | ID | 主题 | 触发场景 | 学习目标 | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | ✅ | PY-01 | venv / uv | 初始化项目、LC-02 环境排障 | 理解 Python 依赖隔离 | 已整理 `learning/PY_01_venv_uv/venv_uv.md`；LC-00 阶段完成 uv/venv 基础概念，LC-02 阶段实际解决 uv 安装、Python 3.12 虚拟环境、依赖同步和 PyCharm 解释器配置问题。 |
-| ⬜ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 理解类型标注与运行时校验不是一回事 |
+| ✅ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 已在 LC-05 Tools 中掌握函数参数和返回值类型标注，并理解 type hints 会影响工具 schema，但不等于 Python 运行时校验；LC-06 中继续使用 `Literal`、`list[str]`、`str | None` 等常见类型标注。 |
 | ✅ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 已在 LC-03 接触 dataclass 配置对象，在 LC-06 完成 Pydantic `BaseModel`、`Field(...)`、`Literal`、`ValidationError` 思路和 `model_dump()` 序列化基础。 |
 | ⬜ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 关注函数包装、注册和调用时机 |
 | ⬜ | PY-05 | with | memory / client / file | 理解上下文管理器 | 关注资源进入、退出和异常清理 |
