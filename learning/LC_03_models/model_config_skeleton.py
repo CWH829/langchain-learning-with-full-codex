@@ -88,6 +88,7 @@ def build_chat_model():
         temperature=model_setting.temperature,
         timeout=model_setting.timeout,
         max_retries=model_setting.max_retries,
+        extra_body={"thinking": {"type": "disabled"}},      # Thinking mode does not support this tool_choice，所以先关闭 thinking 模式
     )
 
 

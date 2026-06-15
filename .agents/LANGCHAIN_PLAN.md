@@ -129,7 +129,7 @@ uv sync
 | ✅ | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `learning/LC_03_models/models.md`、`learning/LC_03_models/model_config_skeleton.py` | 封装可切换 model 配置 | 环境变量、配置读取 | 2026-06-13 | 2026-06-14 | R6 | 已核对官方 Models 与 ChatOpenAI integration 文档；学习者已补全模型配置骨架，使用 `python-dotenv` 加载本地环境变量，并通过 DeepSeek OpenAI-compatible API 成功调用模型获得响应。 |
 | ✅ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 | `learning/LC_04_messages/messages.md`、`learning/LC_04_messages/message_flow_skeleton.py` | 打印并分析 messages 流 | list/dict、对象属性访问 | 2026-06-14 | 2026-06-14 17:20 | R6 | 已补全 message 流分析骨架，能构造 `SystemMessage` / `HumanMessage`，调用模型并观察 `AIMessage` 的 `content`、`text`、`content_blocks`、`usage_metadata` 等字段；阶段文档已补充知识细节和实践复盘。 |
 | ✅ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 | `learning/LC_05_tools/tools.md`、`learning/LC_05_tools/tool_calling_skeleton.py` | search + calculator 双工具 agent | docstring、type hints、异常处理 | 2026-06-14 17:42 | 2026-06-15 10:57 | R6 | 学习者已补全 `search_notes` 和 `calculator` 双工具实践，观察了 `model.bind_tools(...)` 的 `tool_calls` 和 `agent.invoke(...)` 的自动工具调用流程；阶段文档已补充实践复盘、关键问题和总结。 |
-| ⬜ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 |  | 输出 `TaskPlan` / `StudySummary` | Pydantic 数据模型与字段校验 |  |  | R6 |  |
+| ✅ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 | `learning/LC_06_structured_output/structured_output.md`、`learning/LC_06_structured_output/structured_output_skeleton.py` | 输出 `TaskPlan` / `StudySummary` | Pydantic 数据模型与字段校验 | 2026-06-15 11:48 | 2026-06-15 15:23 | R6 | 学习者已补全 `TaskPlan` 和 `StudySummary` 两套 Pydantic schema，观察了 `response_format=TaskPlan`、`ToolStrategy(StudySummary)`、`structured_response` 与 `model_dump()`；已记录 DeepSeek V4 Pro thinking mode 与 `tool_choice` 冲突，并通过关闭 thinking 解决。 |
 | ⬜ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 |  | 在工具中读取上下文 | 参数注入、可选参数 |  |  | R6 |  |
 | ⬜ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 |  | 加日志/摘要/人工确认 | 装饰器、函数式组合 |  |  | R6 |  |
 | ⬜ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 |  | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 |  |  | R6 |  |
@@ -151,7 +151,7 @@ uv sync
 | --- | --- | --- | --- | --- | --- |
 | ✅ | PY-01 | venv / uv | 初始化项目、LC-02 环境排障 | 理解 Python 依赖隔离 | 已整理 `learning/PY_01_venv_uv/venv_uv.md`；LC-00 阶段完成 uv/venv 基础概念，LC-02 阶段实际解决 uv 安装、Python 3.12 虚拟环境、依赖同步和 PyCharm 解释器配置问题。 |
 | ⬜ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 理解类型标注与运行时校验不是一回事 |
-| ⬜ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 理解数据模型、校验和序列化基础 |
+| ✅ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 已在 LC-03 接触 dataclass 配置对象，在 LC-06 完成 Pydantic `BaseModel`、`Field(...)`、`Literal`、`ValidationError` 思路和 `model_dump()` 序列化基础。 |
 | ⬜ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 关注函数包装、注册和调用时机 |
 | ⬜ | PY-05 | with | memory / client / file | 理解上下文管理器 | 关注资源进入、退出和异常清理 |
 | ⬜ | PY-06 | async/await | MCP / async invoke | 能读懂异步调用 | 关注事件循环、协程和异步资源生命周期 |
