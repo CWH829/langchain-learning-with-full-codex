@@ -20,20 +20,19 @@
 
 ## 2. Codex Agent 执行说明
 
-1. 先读本文件，找到“知识点总表”中第一条状态为“未开始”或“进行中”的任务。
-2. 开始新阶段学习时，必须先提醒学习者确认当前智能程度为“高”，等待学习者回复后再继续执行；学习结束后补充完善学习文档前，也需要同样提醒并等待确认。
+1. 先读本文件，找到“知识点总表”中第一条状态为 `⬜` 或 `🟡` 的任务。
+2. 开始新阶段学习时，必须先提醒学习者确认当前智能程度为“高”，等待学习者回复后再继续；学习结束后补充完善学习文档前，也需要同样提醒并等待确认。
 3. 学习每个知识点前，优先检索官方文档，确认 API、包名、导入路径未过时。
-4. 每个知识点按实际内容灵活推进，可参考这些动作规划：官方核对、概念讲解、整理知识笔记、引导代码实践、排错记录、阶段总结、进度更新等。
-5. 学习文档生成时应尽量完整、丰富，尽量覆盖当前知识点的关键细节和要点；文档结构和写法可按当前知识点灵活调整，不必严格沿用上一阶段文档风格和结构，适当参考即可；
-6. 知识点默认不强行套 Java 视角；如果某个概念确实非常适合用 Java 类比帮助理解，可以在句末用括号简单补充，例如：`Python 装饰器（类似 Java 的 AOP）`；目的只是用于理解记忆，不要过分严谨的做对比。
-7. 学习完成后，先检查一下代码情况：不仅要检查代码有没有明显问题和可优化处，也要对照当前实践任务检查关键练习点是否都已覆盖、是否有遗漏.
-8. 学习完成后，可结合实践过程和结果，补充学习文档，如知识细节、实践记录、排错记录和总结等；实践任务、观察重点或观察对比中得到的结论也应尽量沉淀到文档中，便于以后不重新跑代码也能复盘当时观察到的结果。
-9. 代码以 Python 为主；遇到 Python 特殊语法、特色功能、特性等内容时，按实际需要在学习文档或代码注释中简单解释。
-10. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
+4. 每个知识点不强制套用固定模板，按实际内容灵活推进，通常包括：目标确认、官方核对、概念讲解、手写实践、实践后观察到的结论、排错记录、阶段总结和进度更新。
+5. 学习文档生成时应尽量完整、丰富，尽量覆盖当前知识点的关键细节和要点。
+6. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现，也不主动执行大量命令或测试验证，以节省时间和 token。
+7. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
+8. 学习内容以 LangChain、LangGraph 和 Python 为主，默认不强行套 Java 视角；如果概念确实适合类比，可在句末用括号简短补充。
+9. 讲解或记录英文术语时可以保留原文；如果属于较高级或不直观的词汇，可在后面用中文括号补充翻译，辅助理解，例如：`transient（短暂的）`。
+10. 遇到 Python 特殊语法、特色功能或特性时，按实际需要在学习文档或代码注释中简单解释。
 11. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
-12. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
-13. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；注意，该表只记录计划本身的变更。
-14. 为节省 token，不要一次性展开所有知识点；只展开当前任务需要的资料、概念和必要代码片段。
+12. 学习完成后，先检查代码明显问题、可优化处和实践任务覆盖情况；再结合实践，更新学习文档，如知识细节、实践记录、排错记录和总结等；最后总结阶段摘要。
+13. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更。
 
 状态列使用 emoji 记录：`⬜` 表示未开始，`🟡` 表示进行中，`✅` 表示已完成，`⏭️` 表示跳过。
 
@@ -72,17 +71,8 @@ uv sync
 ├── src/
 │   └── langchain_study/
 ├── learning/
-│   ├── LC_01_version_boundary/
-│   │   └── version_boundary.md
-│   ├── LC_02_minimal_agent/
-│   │   ├── hello_agent.py
-│   │   └── minimal_agent.md
-│   ├── LC_03_models/
-│   │   ├── model_config_skeleton.py
-│   │   ├── model_config_skeleton.origin.py
-│   │   └── models.md
-│   └── PY_01_venv_uv/
-│       └── venv_uv.md
+│   ├── LC_xx_<topic>/                 # LangChain 主线阶段
+│   └── PY_xx_<topic>/                 # Python 补充知识
 └── tests/
 ```
 
@@ -105,54 +95,40 @@ uv sync
 | R11 | P2 | RAG / ReAct / Toolformer / MCP spec | 理解模式来源 | 选读 |
 | R12 | P3 | 中文社区资料 | 术语预览 | 需回到官方文档核对 |
 
-## 6. 学习推进协议
-
-每个知识点不强制套用固定模板，可按实际内容参考以下节奏：
-
-```text
-1. 明确当前知识点目标
-2. 核对官方资料
-3. 讲清关键概念并整理学习文档
-4. 给出手写实践目标、步骤、片段或骨架
-5. 引导排错并记录有价值的问题
-6. 学习结束后补充知识细节、实践记录和总结
-7. 更新学习计划进度
-```
-
 具体执行约束以“Codex Agent 执行说明”为准。
 
-## 7. 知识点总表
+## 6. 知识点总表
 
-| 状态 | ID | 主题 | 知识点 | 最小目标 | 产出 | 代码实践 | Python 要点 | 开始时间 | 完成时间 | 资源 | 备注 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ✅ | LC-00 | 项目初始化 | uv、项目结构、Git 规则 | 建好学习仓库 | 初始目录 + README | 初始化项目并首次提交 | venv/uv 与 Maven/Gradle 的区别 | 2026-06-13 | 2026-06-13 | R10 | 已创建 uv 兼容项目骨架；计划迁移到 `.agents/`；依赖改为 PyPI 最新精确版本。 |
-| ✅ | LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | `learning/LC_01_version_boundary/version_boundary.md` | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
-| ✅ | LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | `learning/LC_02_minimal_agent/hello_agent.py`、`learning/LC_02_minimal_agent/minimal_agent.md` | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 | 2026-06-13 | 2026-06-13 | R5 | 已跑通最小 agent invoke 和工具调用；环境切到 Python 3.12 + uv；因 OpenAI API 额度不足，改用 DeepSeek OpenAI-compatible API，并补充 `langchain-openai` 依赖。 |
-| ✅ | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | `learning/LC_03_models/models.md`、`learning/LC_03_models/model_config_skeleton.py` | 封装可切换 model 配置 | 环境变量、配置读取 | 2026-06-13 | 2026-06-14 | R6 | 已核对官方 Models 与 ChatOpenAI integration 文档；学习者已补全模型配置骨架，使用 `python-dotenv` 加载本地环境变量，并通过 DeepSeek OpenAI-compatible API 成功调用模型获得响应。 |
-| ✅ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 | `learning/LC_04_messages/messages.md`、`learning/LC_04_messages/message_flow_skeleton.py` | 打印并分析 messages 流 | list/dict、对象属性访问 | 2026-06-14 | 2026-06-14 17:20 | R6 | 已补全 message 流分析骨架，能构造 `SystemMessage` / `HumanMessage`，调用模型并观察 `AIMessage` 的 `content`、`text`、`content_blocks`、`usage_metadata` 等字段；阶段文档已补充知识细节和实践复盘。 |
-| ✅ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 | `learning/LC_05_tools/tools.md`、`learning/LC_05_tools/tool_calling_skeleton.py` | search + calculator 双工具 agent | docstring、type hints、异常处理 | 2026-06-14 17:42 | 2026-06-15 10:57 | R6 | 学习者已补全 `search_notes` 和 `calculator` 双工具实践，观察了 `model.bind_tools(...)` 的 `tool_calls` 和 `agent.invoke(...)` 的自动工具调用流程；阶段文档已补充实践复盘、关键问题和总结。 |
-| ✅ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 | `learning/LC_06_structured_output/structured_output.md`、`learning/LC_06_structured_output/structured_output_skeleton.py` | 输出 `TaskPlan` / `StudySummary` | Pydantic 数据模型与字段校验 | 2026-06-15 11:48 | 2026-06-15 15:23 | R6 | 学习者已补全 `TaskPlan` 和 `StudySummary` 两套 Pydantic schema，观察了 `response_format=TaskPlan`、`ToolStrategy(StudySummary)`、`structured_response` 与 `model_dump()`；已记录 DeepSeek V4 Pro thinking mode 与 `tool_choice` 冲突，并通过关闭 thinking 解决。 |
-| ✅ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 | `learning/LC_07_runtime/runtime.md`、`learning/LC_07_runtime/runtime_context_skeleton.py` | 在工具中读取上下文 | 参数注入、可选参数 | 2026-06-15 16:07 | 2026-06-15 19:05 | R6 | 学习者已补全 runtime context 实践，理解 `context_schema`、`agent.invoke(..., context=...)`、工具中的 `ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录 `InvalidUpdateError: Expected dict` 的排错过程。 |
-| ✅ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | `learning/LC_08_middleware/middleware.md`、`learning/LC_08_middleware/middleware_skeleton.py` | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 2026-06-15 19:19 | 2026-06-16 18:39 | R6 | 学习者已补全 logging middleware、HITL 人工确认和 summarization 构造实践；已观察 node-style hooks 的执行时机、`GraphOutput.value` / `GraphOutput.interrupts`、checkpointer + `thread_id` 的作用，并完成阶段文档复盘。 |
-| ⬜ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 |  | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 |  |  | R6 |  |
-| ⬜ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 |  | 多轮对话保留上下文 | `with`、资源管理 |  |  | R6 |  |
-| ⬜ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 |  | 存取用户偏好示例 | 数据结构、序列化 |  |  | R6 |  |
-| ⬜ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 |  | 文本切分 + 向量检索 | 文件读写、列表处理 |  |  | R6 |  |
-| ⬜ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 |  | 本地文本问答 | pipeline 思维 |  |  | R6,R11 |  |
-| ⬜ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG |  | 给 agent 增加检索工具 | 控制流、结果校验 |  |  | R6,R11 |  |
-| ⬜ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 |  | 让 agent 调用 MCP server | async/await、客户端生命周期 |  |  | R1,R2,R6 |  |
-| ⬜ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 |  | 记录一次完整 agent trace | 环境变量、SDK 配置 |  |  | R7 |  |
-| ⬜ | LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 |  | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 |  |  | R8 |  |
-| ⬜ | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph |  | Router 或简单 workflow | TypedDict、状态传递 |  |  | R9 |  |
-| ⬜ | LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 |  | 可选 subagent demo | 上下文隔离 |  |  | R6,R9 | 可选 |
-| ⬜ | LC-20 | 综合小项目 | agent + tools + RAG + MCP + tracing/eval | 完成可复盘项目 |  | 做一个个人知识库问答 agent | 项目组织、测试、提交 |  |  | R1-R9 |  |
+| 状态 | ID | 主题 | 知识点 | 最小目标 | 代码实践 | Python 要点 | 开始时间 | 完成时间 | 资源 | 备注 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ✅ | LC-00 | 项目初始化 | uv、项目结构、Git 规则 | 建好学习仓库 | 初始化项目并首次提交 | venv/uv 与 Maven/Gradle 的区别 | 2026-06-13 | 2026-06-13 | R10 | 已创建 uv 兼容项目骨架；计划迁移到 `.agents/`；依赖改为 PyPI 最新精确版本。 |
+| ✅ | LC-01 | 版本边界 | LangChain v1、`create_agent`、`langchain-classic` | 识别新旧资料边界 | 对比 v1 与旧教程导入路径 | 包名和导入路径优先查官方 | 2026-06-13 | 2026-06-13 | R3,R4 | 已核对官方 v1 文档；本地 `.venv` 尚未安装依赖，LC-02 前需同步环境。 |
+| ✅ | LC-02 | 最小 agent | `create_agent`、model、tools | 跑通最小 agent | 创建能回答问题并调用工具的 agent | 函数、模块、入口脚本 | 2026-06-13 | 2026-06-13 | R5 | 已跑通最小 agent invoke 和工具调用；环境切到 Python 3.12 + uv；因 OpenAI API 额度不足，改用 DeepSeek OpenAI-compatible API，并补充 `langchain-openai` 依赖。 |
+| ✅ | LC-03 | Models | chat model、provider、参数 | 能替换模型 provider | 封装可切换 model 配置 | 环境变量、配置读取 | 2026-06-13 | 2026-06-14 | R6 | 已核对官方 Models 与 ChatOpenAI integration 文档；学习者已补全模型配置骨架，使用 `python-dotenv` 加载本地环境变量，并通过 DeepSeek OpenAI-compatible API 成功调用模型获得响应。 |
+| ✅ | LC-04 | Messages | system/user/assistant/tool messages、content blocks | 理解模型上下文结构 | 打印并分析 messages 流 | list/dict、对象属性访问 | 2026-06-14 | 2026-06-14 17:20 | R6 | 已补全 message 流分析骨架，能构造 `SystemMessage` / `HumanMessage`，调用模型并观察 `AIMessage` 的 `content`、`text`、`content_blocks`、`usage_metadata` 等字段；阶段文档已补充知识细节和实践复盘。 |
+| ✅ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 | search + calculator 双工具 agent | docstring、type hints、异常处理 | 2026-06-14 17:42 | 2026-06-15 10:57 | R6 | 学习者已补全 `search_notes` 和 `calculator` 双工具实践，观察了 `model.bind_tools(...)` 的 `tool_calls` 和 `agent.invoke(...)` 的自动工具调用流程；阶段文档已补充实践复盘、关键问题和总结。 |
+| ✅ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 | 输出 `TaskPlan` / `StudySummary` | Pydantic 数据模型与字段校验 | 2026-06-15 11:48 | 2026-06-15 15:23 | R6 | 学习者已补全 `TaskPlan` 和 `StudySummary` 两套 Pydantic schema，观察了 `response_format=TaskPlan`、`ToolStrategy(StudySummary)`、`structured_response` 与 `model_dump()`；已记录 DeepSeek V4 Pro thinking mode 与 `tool_choice` 冲突，并通过关闭 thinking 解决。 |
+| ✅ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 | 在工具中读取上下文 | 参数注入、可选参数 | 2026-06-15 16:07 | 2026-06-15 19:05 | R6 | 学习者已补全 runtime context 实践，理解 `context_schema`、`agent.invoke(..., context=...)`、工具中的 `ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录 `InvalidUpdateError: Expected dict` 的排错过程。 |
+| ✅ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 2026-06-15 19:19 | 2026-06-16 18:39 | R6 | 学习者已补全 logging middleware、HITL 人工确认和 summarization 构造实践；已观察 node-style hooks 的执行时机、`GraphOutput.value` / `GraphOutput.interrupts`、checkpointer + `thread_id` 的作用，并完成阶段文档复盘。 |
+| 🟡 | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 | 2026-06-16 21:05 |  | R6 | 已跳过智能程度确认；已核对官方 Context engineering 文档并创建阶段起步文档与手写骨架。 |
+| ⬜ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | 多轮对话保留上下文 | `with`、资源管理 |  |  | R6 |  |
+| ⬜ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | 存取用户偏好示例 | 数据结构、序列化 |  |  | R6 |  |
+| ⬜ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | 文本切分 + 向量检索 | 文件读写、列表处理 |  |  | R6 |  |
+| ⬜ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 |  |  | R6,R11 |  |
+| ⬜ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | 给 agent 增加检索工具 | 控制流、结果校验 |  |  | R6,R11 |  |
+| ⬜ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | 让 agent 调用 MCP server | async/await、客户端生命周期 |  |  | R1,R2,R6 |  |
+| ⬜ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | 记录一次完整 agent trace | 环境变量、SDK 配置 |  |  | R7 |  |
+| ⬜ | LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 |  |  | R8 |  |
+| ⬜ | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | Router 或简单 workflow | TypedDict、状态传递 |  |  | R9 |  |
+| ⬜ | LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 | 可选 subagent demo | 上下文隔离 |  |  | R6,R9 | 可选 |
+| ⬜ | LC-20 | 综合小项目 | agent + tools + RAG + MCP + tracing/eval | 完成可复盘项目 | 做一个个人知识库问答 agent | 项目组织、测试、提交 |  |  | R1-R9 |  |
 
-## 8. Python 补充学习索引
+## 7. Python 补充学习索引
 
 | 状态 | ID | 主题 | 触发场景 | 学习目标 | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | ✅ | PY-01 | venv / uv | 初始化项目、LC-02 环境排障 | 理解 Python 依赖隔离 | 已整理 `learning/PY_01_venv_uv/venv_uv.md`；LC-00 阶段完成 uv/venv 基础概念，LC-02 阶段实际解决 uv 安装、Python 3.12 虚拟环境、依赖同步和 PyCharm 解释器配置问题。 |
-| ✅ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 已在 LC-05 Tools 中掌握函数参数和返回值类型标注，并理解 type hints 会影响工具 schema，但不等于 Python 运行时校验；LC-06 中继续使用 `Literal`、`list[str]`、`str | None` 等常见类型标注。 |
+| ✅ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 已在 LC-05 Tools 中掌握函数参数和返回值类型标注，并理解 type hints 会影响工具 schema，但不等于 Python 运行时校验；LC-06 中继续使用 `Literal`、`list[str]`、<code>str &#124; None</code> 等常见类型标注。 |
 | ✅ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 已在 LC-03 接触 dataclass 配置对象，在 LC-06 完成 Pydantic `BaseModel`、`Field(...)`、`Literal`、`ValidationError` 思路和 `model_dump()` 序列化基础。 |
 | ✅ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 已在 LC-08 中结合 `@tool`、middleware hook 和 Java AOP 类比，理解装饰器用于包装/注册函数，以及框架按约定调用被注册函数的基本思路。 |
 | ⬜ | PY-05 | with | memory / client / file | 理解上下文管理器 | 关注资源进入、退出和异常清理 |
@@ -160,17 +136,25 @@ uv sync
 | ⬜ | PY-07 | list/dict comprehension | 数据处理 | 能读懂简洁表达式 | 不必一开始强记 |
 | ⬜ | PY-08 | pytest | eval / tests | 能写最小测试 | 后续项目化需要 |
 
-## 9. 学习记录规范
+## 8. 学习记录规范
 
-学习记录只记录有复盘价值的信息，执行规则以第 2 节和第 6 节为准。每完成或阶段性推进一个知识点时，按实际情况更新：
+学习记录只记录有复盘价值的信息。每完成或阶段性推进一个知识点时，按实际情况更新：
 
-```text
-- 知识点总表：状态、开始时间、完成时间、产出路径、关键备注
-- `learning/` 对应阶段目录：学习文档、手写骨架、origin 副本、实践记录、排错记录、阶段总结等
-- 学习文档：尽量沉淀为可复习材料，覆盖核心概念、关键 API、字段/参数细节、常见坑和实践结论等；实践代码运行后得到的观察结果、对比结果和关键输出含义，应在有复盘价值时写入文档
+- 知识点总表：状态、开始时间、完成时间、关键备注
+- 阶段摘要记录表：按阶段记录核心结论、关键 API / 概念、后续依赖
+- `learning/` 对应阶段目录：学习文档、手写骨架、origin 副本
+- 学习文档：记录完整知识细节、实践记录、观察结果、核心结论、阶段总结等
 - 备注：只记录阻塞、偏差、关键决策和下次动作，不复述正文
 - Git：完成阶段性改动后，记录本次改动摘要，并只提供建议提交信息
-```
+
+## 9. 阶段摘要记录表
+
+每个阶段完成后，在本节按阶段追加简短摘要，优先服务于后续阶段恢复上下文。摘要控制在几行到一小段。
+
+| 阶段 | 摘要 |
+| --- | --- |
+| LC-xx 阶段名 | - 核心结论：<br>- 关键 API / 概念：<br>- 后续依赖： |
+| LC-00 项目初始化 | - 核心结论：完成 LangChain v1 学习仓库初始化，确立 `uv` + `src/` 包结构 + `.agents/` 学习计划入口。<br>- 关键 API / 概念：`pyproject.toml`、`uv sync`、虚拟环境、`hatchling` 构建后端、`src/langchain_study` 可复用包。<br>- 后续依赖：后续阶段以 `.agents/LANGCHAIN_PLAN.md` 推进进度，以 `learning/` 按阶段沉淀材料；环境依赖以 `pyproject.toml` 和 `uv.lock` 为准。 |
 
 ## 10. 完成标准
 
@@ -207,3 +191,12 @@ uv sync
 | 2026-06-15 21:02 | 调整讲解风格约束：默认不强行套 Java 视角，但当概念确实适合类比时，可在句末括号中补充简短 Java 类比。 | 执行说明 |
 | 2026-06-15 23:26 | 补充学习完成后的代码检查规则：除检查代码问题和优化点外，还要对照当前实践任务检查关键练习点是否都已覆盖、是否有遗漏。 | 执行说明 |
 | 2026-06-16 12:21 | 补充实践结论沉淀规则：实践任务、观察重点或对比实验得到的观察结果、对比结果和关键输出含义，应在有复盘价值时写入学习文档。 | 执行说明、学习记录规范 |
+| 2026-06-16 21:39 | 补充术语讲解规则：高级或不直观的英文概念名词可保留英文，并在后面用中文括号补充翻译。 | 执行说明 |
+| 2026-06-16 22:30 | 新增“阶段摘要记录”小节，明确阶段完成后在独立小节沉淀轻量摘要，避免知识点总表备注过长。 | 学习记录规范、阶段摘要记录 |
+| 2026-06-16 22:37 | 删除知识点总表“产出”列，避免与阶段文档和阶段摘要重复维护。 | 知识点总表、学习记录规范 |
+| 2026-06-16 22:46 | 整理“Codex Agent 执行说明”，收敛执行规则并减少与学习记录、阶段摘要小节的重复。 | 执行说明 |
+| 2026-06-16 22:49 | 调整阶段摘要记录格式，改为“阶段 / 摘要”两列表格。 | 阶段摘要记录 |
+| 2026-06-16 23:10 | 补充 LC-00 项目初始化阶段摘要，作为阶段摘要记录样例。 | 阶段摘要记录 |
+| 2026-06-16 23:11 | 修正执行说明列表编号，并在删除“学习推进协议”后顺延后续章节编号。 | 执行说明、章节结构 |
+| 2026-06-16 23:11 | 转义 Python 补充学习索引中的联合类型竖线，修正 Markdown 表格列数。 | Python 补充学习索引 |
+| 2026-06-16 23:14 | 简化建议项目结构，不再展开具体阶段目录，只保留阶段目录命名模式。 | 建议项目结构 |
