@@ -43,6 +43,9 @@ def search_study_notes(query: str) -> str:
     # 1. 参考 LC-05 的 search_notes。
     # 2. 支持 query 命中阶段编号或笔记正文。
     # 3. 没有命中时返回清晰中文提示。
+    if not query.strip():
+        return "无参数"
+
     query = query.strip().lower()
 
     for topic, note in STUDY_NOTES.items():
@@ -76,8 +79,8 @@ class StudyLoggingMiddleware(AgentMiddleware):
         # 1. 打印 agent 即将开始。
         # 2. 观察 state["messages"] 当前有多少条消息。
         # 3. 返回 None，表示不修改 agent state。
-        print(f"看看state结构：{state}")
-        print(f"再看看runtime结构：{runtime}")
+        print(f"看看state结构：{state}")     # 就是一个HumanMessage
+        print(f"再看看runtime结构：{runtime}")    # LC-07中提到的那些
 
         messages = state["messages"]
         print("Agent 即将开始执行！")
@@ -94,7 +97,7 @@ class StudyLoggingMiddleware(AgentMiddleware):
         print("即将调用模型！")
         print(f"当前消息数量：{len(messages)}")
         _ = runtime  # runtime 这阶段学习暂时不用
-        return {"A": 1}  # 看看会怎样
+        return None
 
     def after_model(self, state: AgentState, runtime) -> dict[str, Any] | None:
         # 1. 打印模型调用结束。
@@ -108,8 +111,8 @@ class StudyLoggingMiddleware(AgentMiddleware):
         last_msg.pretty_print()
         print(f"最后一条消息的类型：{type(last_msg).__name__}")
         print(f"最后一条消息的内容：{last_msg.content}")
-        print(
-            f"最后一条消息的工具调用：{getattr(last_msg, 'tool_calls', '无tool_calls')}")  # 如果是HumanMsg，是没有tool_calls字段的，所以要用 getattr
+        tool_calls = getattr(last_msg, "tool_calls", "无tool_calls")
+        print(f"最后一条消息的工具调用：{tool_calls}")  # HumanMessage 没有 tool_calls 字段。
 
         _ = runtime
         return None
@@ -120,7 +123,7 @@ class StudyLoggingMiddleware(AgentMiddleware):
         # 3. 返回 None。
         print("Agent 执行结束！")
         messages = state["messages"]
-        print(f"当前消息数量：{len(messages)}")
+        print(f"当前消息数量：{len(messages)}")    # 5次
         final_msg = messages[-1]
         print("最终消息：")
         final_msg.pretty_print()
@@ -206,24 +209,43 @@ def invoke_hitl_until_interrupt(question: str) -> tuple[dict, dict]:
     result = agent.invoke(
         {"messages": [{"role": "user", "content": question}]},
         config=config,  # 重点
-        version="v2",  # HITL 场景建议按官方示例带上它，用来获得新版 interrupt 结构
+        version="v2",  # HITL 场景建议按官方示例带上它，result 用来获得新版 interrupt 结构
     )
     return config, result
 
 
-def inspect_result(result: dict) -> None:
+def inspect_result(result: Any) -> None:
     """打印 messages，便于观察 middleware 和工具调用过程。"""
+
+    # 如果是普通invoke，则是dict、如果是version=v2，则是GraphOutput对象
+    if hasattr(result, "value") and hasattr(result, "interrupts"):
+        output = result.value
+        interrupts = result.interrupts
+    else:
+        output = result
+        interrupts = ()
+
+    print("=== result type ===")
+    print(type(result).__name__)
+
     print("=== result keys ===")
-    print(result.keys())
+    # 如果是dict
+    if isinstance(output, dict):
+        print(output.keys())
+        messages = output.get("messages", [])
+    else:
+        # 如果是对象
+        print(f"output 不是 dict：{type(output).__name__}")
+        messages = getattr(output, "messages", [])
 
     print("=== messages ===")
-    for index, message in enumerate(result.get("messages", [])):
+    for index, message in enumerate(messages):
         print(f"\n--- message {index}: {type(message).__name__} ---")
         message.pretty_print()
 
-    if "__interrupt__" in result:
-        print("=== interrupt ===")
-        print(result["__interrupt__"])
+    if interrupts:
+        print("=== interrupts ===")
+        print(interrupts)
 
 
 def main() -> None:
@@ -243,6 +265,7 @@ def main() -> None:
 
     print("\n\n=== 测试 SUMMARY 上下文压缩 中间件 ===")
     # todo
+
 
 if __name__ == "__main__":
     main()

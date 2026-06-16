@@ -352,6 +352,209 @@ search_study_notes = tool(search_study_notes)
 - 把 `publish_study_summary` 这类有副作用动作直接交给模型执行，没有人工确认或权限控制。
 - 把 summarization 当成永久记忆。它只是压缩当前上下文，不适合保存长期用户偏好。
 
+## 实践复盘
+
+本阶段完成了 `learning/LC_08_middleware/middleware_skeleton.py` 的手写实践：
+
+- 补全了 `search_study_notes(...)`，用于根据阶段编号或笔记正文搜索本地学习笔记，并对空 query 做了简单保护。
+- 补全了 `publish_study_summary(...)`，把“发布学习总结”模拟为一个有副作用的高影响工具，便于后续用 HITL 拦截。
+- 继承 `AgentMiddleware` 实现了 `StudyLoggingMiddleware`，在 `before_agent`、`before_model`、`after_model`、`after_agent` 中打印 state、runtime、messages、最终消息和 tool calls 等观察信息。
+- 在 `build_logging_agent()` 中通过 `middleware=[StudyLoggingMiddleware()]` 接入自定义日志中间件。
+- 在 `build_hitl_agent()` 中通过 `HumanInTheLoopMiddleware(interrupt_on={"publish_study_summary": True})` 给 `publish_study_summary` 增加人工确认，并传入 `InMemorySaver()` 作为 checkpointer。
+- 在 `invoke_hitl_until_interrupt(...)` 中使用固定 `thread_id` 和 `version="v2"` 发起 HITL 调用，观察中断结果。
+- 补全了 `build_summarization_agent()` 的构造方式，明确 `SummarizationMiddleware` 需要传入 `model=model`、`trigger=...` 和 `keep=...`。当前 `main()` 中 summarization 仍作为后续可手动观察项保留。
+
+### Logging middleware 观察结论
+
+自定义 middleware 的类方法名是固定 hook 名称，本质上是重写 `AgentMiddleware` 父类方法（类似 Java 里继承父类后重写方法）。如果方法名写错，例如写成 `before_llm`，LangChain 不会把它当作 hook 调用。
+
+实践中能观察到：
+
+- `before_agent` 在一次 `agent.invoke(...)` 开始时执行，适合看入口 state 和 runtime。
+- `before_model` 在每次模型调用前执行；如果 agent 先让模型决定工具调用、执行工具后再让模型生成最终回答，它可能执行多次。
+- `after_model` 在模型返回后执行，很适合观察 `AIMessage` 以及其中的 `tool_calls`。
+- `after_agent` 在 agent 完成后执行，适合观察最终消息。
+
+`state` 在 middleware 中可以先按 dict-like 对象理解，常用：
+
+```python
+messages = state.get("messages", [])
+```
+
+`messages` 里的元素通常是 LangChain message 对象，例如 `HumanMessage`、`AIMessage`、`ToolMessage`，所以可以用：
+
+```python
+message.content
+message.pretty_print()
+getattr(message, "tool_calls", None)
+```
+
+这里也顺手复习了对象和字典的取值方式：
+
+```text
+对象：message.content 或 getattr(message, "content", "")
+字典：state["messages"] 或 state.get("messages", [])
+```
+
+hook 返回值也很重要：
+
+- 返回 `None`：只观察，不修改 agent state。
+- 返回 `dict`：表示要更新 agent state。
+
+学习过程中曾用实验性返回值观察行为，阶段收尾时已改回 `return None`。除非明确知道要更新哪些 state 字段，否则观察型 middleware 不建议返回任意 dict。
+
+### HITL 观察结论
+
+HITL 的关键结构是：
+
+```python
+HumanInTheLoopMiddleware(
+    interrupt_on={"publish_study_summary": True}
+)
+```
+
+这表示当 agent 准备执行 `publish_study_summary` 工具时，先暂停并要求人工确认。它拦截的是工具执行，不是用户输入本身。
+
+实践中有三个配套点：
+
+```python
+checkpointer = InMemorySaver()
+config = {"configurable": {"thread_id": "lc-08-hitl-demo"}}
+version = "v2"
+```
+
+- `checkpointer` 保存暂停状态。
+- `thread_id` 标识当前可恢复的对话线程。
+- 中断和恢复必须使用同一个 `thread_id`。
+- `version="v2"` 会让 `invoke(...)` 返回新版结果结构，便于读取 interrupt 信息。
+
+一个重要观察是：普通 `agent.invoke(...)` 通常返回 dict；但带 `version="v2"` 的 HITL 调用会返回 `GraphOutput` 对象。它不是 dict，所以不能直接：
+
+```python
+result.keys()
+```
+
+应该通过：
+
+```python
+result.value
+result.interrupts
+```
+
+来读取真正输出和中断信息。也就是说：
+
+```text
+普通 invoke：result 通常是 dict
+HITL + version="v2"：result 是 GraphOutput，对象里包着 value 和 interrupts
+```
+
+因此 `inspect_result(...)` 最终被整理成同时兼容 dict 和 `GraphOutput` 的版本：先判断有没有 `value`、`interrupts` 属性，再决定从哪里取 messages 和 interrupts。
+
+### Summarization 观察结论
+
+`SummarizationMiddleware` 的核心目标不是“记忆”，而是“压缩当前上下文”。它适合在消息数量或 token 数变多时，把较早历史总结成短摘要，并保留最近若干条消息。
+
+本阶段代码中使用的构造方式是：
+
+```python
+SummarizationMiddleware(
+    model=model,
+    trigger=("messages", 8),
+    keep=("messages", 4),
+)
+```
+
+其中：
+
+- `model=model`：指定用于生成摘要的模型。
+- `trigger=("messages", 8)`：消息数达到阈值时触发摘要。
+- `keep=("messages", 4)`：摘要后保留最近 4 条消息。
+
+这个 middleware 只解决上下文长度问题，不等于长期记忆。它可能丢失细节，所以用户偏好、关键事实、长期资料等内容后续仍要交给 LC-10 / LC-11 的 memory、checkpointer、store 来处理。
+
+### 排错记录
+
+#### `GraphOutput` 没有 `keys()`
+
+HITL 实践中遇到过：
+
+```text
+AttributeError: 'GraphOutput' object has no attribute 'keys'
+```
+
+原因是调用时传了：
+
+```python
+version="v2"
+```
+
+返回值变成 `GraphOutput` 对象，而不是普通 dict。修正思路是：
+
+```python
+if hasattr(result, "value") and hasattr(result, "interrupts"):
+    output = result.value
+    interrupts = result.interrupts
+else:
+    output = result
+    interrupts = ()
+```
+
+然后再从 `output` 中读取 `messages`。
+
+#### PyCharm 黄色类型提示
+
+实践中也遇到过 PyCharm 对 `agent.invoke(...)` 和 `create_agent(...)` 的黄色提示。主要原因是 LangChain 使用了装饰器、泛型、运行时注入和动态返回结构，IDE 的静态类型推断不一定能完全理解。
+
+典型例子：
+
+- `@tool` 包装后的函数，在运行时可以作为工具传给 `create_agent(...)`，但 IDE 有时推断不准确。
+- `ToolRuntime[UserContext]` 这类注入参数对运行时没问题，但静态检查器不一定知道它由框架注入。
+- `version="v2"` 返回 `GraphOutput`，不能当普通 dict 用。
+
+这类问题的判断原则是：如果官方 API 用法正确、本地运行通过、ruff/语法检查通过，而黄色提示来自动态框架类型推断，就优先按运行时和官方文档理解。
+
+### 代码检查
+
+阶段收尾时执行了：
+
+```powershell
+.venv\Scripts\ruff.exe check learning\LC_08_middleware\middleware_skeleton.py
+.venv\Scripts\python.exe -m py_compile learning\LC_08_middleware\middleware_skeleton.py
+```
+
+检查通过。收尾时做了几个小整理：
+
+- `before_model(...)` 从实验性返回值改回 `return None`，避免观察型 middleware 意外修改 state。
+- `search_study_notes(...)` 增加空 query 保护，避免空字符串误命中第一条笔记。
+- 拆分过长打印语句，保持 ruff 检查通过。
+
+### 练习点覆盖检查
+
+对照本阶段实践任务：
+
+| 练习点 | 状态 | 说明 |
+| --- | --- | --- |
+| 本地学习笔记搜索工具 | 已覆盖 | `search_study_notes(...)` 已支持阶段编号和正文关键词命中 |
+| 高影响发布工具 | 已覆盖 | `publish_study_summary(...)` 已模拟发布动作 |
+| 自定义 logging middleware | 已覆盖 | 已实现 `before_agent` / `before_model` / `after_model` / `after_agent` |
+| 创建 logging agent | 已覆盖 | 已通过 `middleware=[StudyLoggingMiddleware()]` 接入 |
+| HITL middleware | 已覆盖 | 已通过 `HumanInTheLoopMiddleware(interrupt_on=...)` 拦截发布工具 |
+| checkpointer + thread_id | 已覆盖 | 已使用 `InMemorySaver()` 和固定 `thread_id` |
+| HITL 中断结构观察 | 已覆盖 | 已观察并处理 `GraphOutput.value` / `GraphOutput.interrupts` |
+| summarization 构造方式 | 已覆盖基础 | 已完成 `build_summarization_agent()`；更系统的上下文压缩观察留到 LC-09 / LC-10 前后继续加深 |
+
+## 阶段总结
+
+LC-08 的关键不是“再加一个工具”，而是理解 agent 运行过程中有哪些固定控制点。middleware 让日志、人工确认、摘要、动态 prompt、工具过滤等横切逻辑可以集中挂到 agent loop 上，而不是散落在每个工具或每次调用周围。
+
+最重要的三个结论：
+
+1. 自定义 middleware 通过固定 hook 方法接入 agent loop；方法名和返回值结构都要按接口约定来。
+2. HITL 适合保护有副作用的工具；它依赖 checkpointer 保存暂停状态，并通过 `thread_id` 找回同一条可恢复执行。
+3. summarization 是上下文压缩，不是长期记忆；它解决“对话越来越长”的成本问题，但不能替代后续 memory/store。
+
+这一阶段也补上了 Python 装饰器和方法重写的直觉：`@tool`、middleware 装饰器和 `AgentMiddleware` 子类，本质上都是让普通 Python 函数或类方法进入框架约定的执行位置。可以把装饰器粗略理解成显式包装或注册函数；在横切逻辑场景下，它和 Java AOP 有相似味道，但 Python 装饰器更显式、更轻量。
+
 ## 和后续阶段的关系
 
 - LC-09 上下文工程：会继续研究如何用 middleware 动态控制 prompt、工具选择和上下文成本。

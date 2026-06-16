@@ -16,7 +16,7 @@
 | 学习方式 | 问答讲解 + 学习者手写 Python 代码实践 + Codex 整理知识笔记与 Git 记录 |
 | 学习时长 | 未指定 |
 | 学习深度 | 先达到能独立完成 agent、RAG、MCP、trace/eval 小项目 |
-| 更新时间 | 2026-06-15 |
+| 更新时间 | 2026-06-16 |
 
 ## 2. Codex Agent 执行说明
 
@@ -27,7 +27,7 @@
 5. 学习文档生成时应尽量完整、丰富，尽量覆盖当前知识点的关键细节和要点；文档结构和写法可按当前知识点灵活调整，不必严格沿用上一阶段文档风格和结构，适当参考即可；
 6. 知识点默认不强行套 Java 视角；如果某个概念确实非常适合用 Java 类比帮助理解，可以在句末用括号简单补充，例如：`Python 装饰器（类似 Java 的 AOP）`；目的只是用于理解记忆，不要过分严谨的做对比。
 7. 学习完成后，先检查一下代码情况：不仅要检查代码有没有明显问题和可优化处，也要对照当前实践任务检查关键练习点是否都已覆盖、是否有遗漏.
-8. 学习完成后，可结合实践过程和结果，补充学习文档，如知识细节、实践记录、排错记录和总结等。
+8. 学习完成后，可结合实践过程和结果，补充学习文档，如知识细节、实践记录、排错记录和总结等；实践任务、观察重点或观察对比中得到的结论也应尽量沉淀到文档中，便于以后不重新跑代码也能复盘当时观察到的结果。
 9. 代码以 Python 为主；遇到 Python 特殊语法、特色功能、特性等内容时，按实际需要在学习文档或代码注释中简单解释。
 10. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，不直接生成完整实现 然后执行各种命令 做各种测试验证等等，否则既耗时又耗token额度。
 11. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
@@ -133,7 +133,7 @@ uv sync
 | ✅ | LC-05 | Tools | tool 定义、参数 schema、tool calling | 会写自定义工具 | `learning/LC_05_tools/tools.md`、`learning/LC_05_tools/tool_calling_skeleton.py` | search + calculator 双工具 agent | docstring、type hints、异常处理 | 2026-06-14 17:42 | 2026-06-15 10:57 | R6 | 学习者已补全 `search_notes` 和 `calculator` 双工具实践，观察了 `model.bind_tools(...)` 的 `tool_calls` 和 `agent.invoke(...)` 的自动工具调用流程；阶段文档已补充实践复盘、关键问题和总结。 |
 | ✅ | LC-06 | Structured Output | `response_format`、Pydantic | 返回稳定结构 | `learning/LC_06_structured_output/structured_output.md`、`learning/LC_06_structured_output/structured_output_skeleton.py` | 输出 `TaskPlan` / `StudySummary` | Pydantic 数据模型与字段校验 | 2026-06-15 11:48 | 2026-06-15 15:23 | R6 | 学习者已补全 `TaskPlan` 和 `StudySummary` 两套 Pydantic schema，观察了 `response_format=TaskPlan`、`ToolStrategy(StudySummary)`、`structured_response` 与 `model_dump()`；已记录 DeepSeek V4 Pro thinking mode 与 `tool_choice` 冲突，并通过关闭 thinking 解决。 |
 | ✅ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 | `learning/LC_07_runtime/runtime.md`、`learning/LC_07_runtime/runtime_context_skeleton.py` | 在工具中读取上下文 | 参数注入、可选参数 | 2026-06-15 16:07 | 2026-06-15 19:05 | R6 | 学习者已补全 runtime context 实践，理解 `context_schema`、`agent.invoke(..., context=...)`、工具中的 `ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录 `InvalidUpdateError: Expected dict` 的排错过程。 |
-| 🟡 | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | `learning/LC_08_middleware/middleware.md`、`learning/LC_08_middleware/middleware_skeleton.py` | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 2026-06-15 19:19 |  | R6 | 已核对官方 Middleware、Custom middleware、Prebuilt middleware 和 Human-in-the-loop 文档；已创建阶段文档与手写骨架，待学习者补全 logging / HITL / summarization 实践。 |
+| ✅ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | `learning/LC_08_middleware/middleware.md`、`learning/LC_08_middleware/middleware_skeleton.py` | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 2026-06-15 19:19 | 2026-06-16 18:39 | R6 | 学习者已补全 logging middleware、HITL 人工确认和 summarization 构造实践；已观察 node-style hooks 的执行时机、`GraphOutput.value` / `GraphOutput.interrupts`、checkpointer + `thread_id` 的作用，并完成阶段文档复盘。 |
 | ⬜ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 |  | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 |  |  | R6 |  |
 | ⬜ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 |  | 多轮对话保留上下文 | `with`、资源管理 |  |  | R6 |  |
 | ⬜ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 |  | 存取用户偏好示例 | 数据结构、序列化 |  |  | R6 |  |
@@ -154,7 +154,7 @@ uv sync
 | ✅ | PY-01 | venv / uv | 初始化项目、LC-02 环境排障 | 理解 Python 依赖隔离 | 已整理 `learning/PY_01_venv_uv/venv_uv.md`；LC-00 阶段完成 uv/venv 基础概念，LC-02 阶段实际解决 uv 安装、Python 3.12 虚拟环境、依赖同步和 PyCharm 解释器配置问题。 |
 | ✅ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 已在 LC-05 Tools 中掌握函数参数和返回值类型标注，并理解 type hints 会影响工具 schema，但不等于 Python 运行时校验；LC-06 中继续使用 `Literal`、`list[str]`、`str | None` 等常见类型标注。 |
 | ✅ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 已在 LC-03 接触 dataclass 配置对象，在 LC-06 完成 Pydantic `BaseModel`、`Field(...)`、`Literal`、`ValidationError` 思路和 `model_dump()` 序列化基础。 |
-| ⬜ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 关注函数包装、注册和调用时机 |
+| ✅ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 已在 LC-08 中结合 `@tool`、middleware hook 和 Java AOP 类比，理解装饰器用于包装/注册函数，以及框架按约定调用被注册函数的基本思路。 |
 | ⬜ | PY-05 | with | memory / client / file | 理解上下文管理器 | 关注资源进入、退出和异常清理 |
 | ⬜ | PY-06 | async/await | MCP / async invoke | 能读懂异步调用 | 关注事件循环、协程和异步资源生命周期 |
 | ⬜ | PY-07 | list/dict comprehension | 数据处理 | 能读懂简洁表达式 | 不必一开始强记 |
@@ -167,7 +167,7 @@ uv sync
 ```text
 - 知识点总表：状态、开始时间、完成时间、产出路径、关键备注
 - `learning/` 对应阶段目录：学习文档、手写骨架、origin 副本、实践记录、排错记录、阶段总结等
-- 学习文档：尽量沉淀为可复习材料，覆盖核心概念、关键 API、字段/参数细节、常见坑和实践结论等
+- 学习文档：尽量沉淀为可复习材料，覆盖核心概念、关键 API、字段/参数细节、常见坑和实践结论等；实践代码运行后得到的观察结果、对比结果和关键输出含义，应在有复盘价值时写入文档
 - 备注：只记录阻塞、偏差、关键决策和下次动作，不复述正文
 - Git：完成阶段性改动后，记录本次改动摘要，并只提供建议提交信息
 ```
@@ -206,3 +206,4 @@ uv sync
 | 2026-06-14 17:58 | 补充学习文档生成规则：阶段文档不必严格沿用上一阶段风格和结构，可按当前知识点灵活调整，适当参考即可。 | 执行说明 |
 | 2026-06-15 21:02 | 调整讲解风格约束：默认不强行套 Java 视角，但当概念确实适合类比时，可在句末括号中补充简短 Java 类比。 | 执行说明 |
 | 2026-06-15 23:26 | 补充学习完成后的代码检查规则：除检查代码问题和优化点外，还要对照当前实践任务检查关键练习点是否都已覆盖、是否有遗漏。 | 执行说明 |
+| 2026-06-16 12:21 | 补充实践结论沉淀规则：实践任务、观察重点或对比实验得到的观察结果、对比结果和关键输出含义，应在有复盘价值时写入学习文档。 | 执行说明、学习记录规范 |
