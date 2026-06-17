@@ -155,6 +155,14 @@ uv sync
 | --- | --- |
 | LC-xx 阶段名 | - 核心结论：<br>- 关键 API / 概念：<br>- 后续依赖： |
 | LC-00 项目初始化 | - 核心结论：完成 LangChain v1 学习仓库初始化，确立 `uv` + `src/` 包结构 + `.agents/` 学习计划入口。<br>- 关键 API / 概念：`pyproject.toml`、`uv sync`、虚拟环境、`hatchling` 构建后端、`src/langchain_study` 可复用包。<br>- 后续依赖：后续阶段以 `.agents/LANGCHAIN_PLAN.md` 推进进度，以 `learning/` 按阶段沉淀材料；环境依赖以 `pyproject.toml` 和 `uv.lock` 为准。 |
+| LC-01 版本边界 | - 核心结论：确认学习范围以 LangChain v1 为准，识别 `create_agent` 等新 API 与旧教程、`langchain-classic` 的边界。<br>- 关键 API / 概念：LangChain v1、`create_agent`、包名与导入路径、官方文档优先级。<br>- 后续依赖：后续讲解 API 前继续优先核对官方文档；旧资料只能作为概念参考，不能直接照搬导入路径。 |
+| LC-02 最小 agent | - 核心结论：跑通最小 agent 调用链，理解 model、tools 与 `agent.invoke(...)` 的基本协作方式。<br>- 关键 API / 概念：`create_agent`、tool 函数、`agent.invoke(...)`、DeepSeek OpenAI-compatible API、`langchain-openai`。<br>- 后续依赖：后续阶段复用 OpenAI-compatible 模型接入方式；环境基线切到 Python 3.12 + `uv`，API 额度问题优先用 DeepSeek 方案绕开。 |
+| LC-03 Models | - 核心结论：模型 provider 和参数可以封装为可切换配置，模型调用不应散落在练习代码各处。<br>- 关键 API / 概念：chat model、provider、`ChatOpenAI` integration、环境变量、`python-dotenv`、配置对象。<br>- 后续依赖：后续练习默认通过配置读取模型参数；涉及 provider、base URL、API key 时优先复用已有配置思路。 |
+| LC-04 Messages | - 核心结论：理解 LangChain 消息流结构，能区分 system、user、assistant、tool message 以及模型响应中的内容块和元数据。<br>- 关键 API / 概念：`SystemMessage`、`HumanMessage`、`AIMessage`、`content`、`text`、`content_blocks`、`usage_metadata`。<br>- 后续依赖：后续做上下文工程、memory、tool calling 时，需要把 messages 视为模型上下文的基础结构。 |
+| LC-05 Tools | - 核心结论：掌握自定义工具定义、参数 schema 生成和模型 tool calling 到 agent 自动工具调用的基本流程。<br>- 关键 API / 概念：`@tool`、docstring、type hints、`model.bind_tools(...)`、`tool_calls`、`agent.invoke(...)`。<br>- 后续依赖：后续 agent、RAG、MCP 阶段会继续复用工具抽象；工具参数描述、异常处理和类型标注会直接影响模型调用质量。 |
+| LC-06 Structured Output | - 核心结论：掌握用结构化 schema 约束模型输出，能从自然语言响应升级到稳定的数据对象。<br>- 关键 API / 概念：`response_format`、Pydantic `BaseModel`、`Field(...)`、`ToolStrategy`、`structured_response`、`model_dump()`。<br>- 后续依赖：后续 eval、RAG 结果校验和 agent 输出协议可复用结构化输出；DeepSeek V4 Pro thinking mode 与 `tool_choice` 冲突时优先关闭 thinking。 |
+| LC-07 Runtime | - 核心结论：理解运行期上下文可以在 agent 调用和工具执行之间传递，用于注入用户信息、配置或状态。<br>- 关键 API / 概念：`context_schema`、`agent.invoke(..., context=...)`、`ToolRuntime`、`runtime.context`、`runtime.state`。<br>- 后续依赖：后续 context engineering、memory 和 middleware 会继续依赖 runtime context；遇到 `InvalidUpdateError: Expected dict` 时优先检查图状态更新返回值。 |
+| LC-08 Middleware | - 核心结论：middleware 可在 agent 执行链路中加入日志、人工确认、摘要等控制逻辑，是控制 agent 行为的重要扩展点。<br>- 关键 API / 概念：middleware、node-style hooks、logging、HITL、summarization、`GraphOutput.value`、`GraphOutput.interrupts`、checkpointer、`thread_id`。<br>- 后续依赖：后续上下文工程和 memory 阶段会继续使用 checkpointer、thread_id 与摘要思路；人工确认流程需要理解 interrupt 和 resume 的状态恢复。 |
 
 ## 10. 完成标准
 
@@ -200,3 +208,4 @@ uv sync
 | 2026-06-16 23:11 | 修正执行说明列表编号，并在删除“学习推进协议”后顺延后续章节编号。 | 执行说明、章节结构 |
 | 2026-06-16 23:11 | 转义 Python 补充学习索引中的联合类型竖线，修正 Markdown 表格列数。 | Python 补充学习索引 |
 | 2026-06-16 23:14 | 简化建议项目结构，不再展开具体阶段目录，只保留阶段目录命名模式。 | 建议项目结构 |
+| 2026-06-17 09:57 | 补充 LC-01 到 LC-08 的阶段摘要记录，便于后续阶段低成本恢复上下文。 | 阶段摘要记录表 |
