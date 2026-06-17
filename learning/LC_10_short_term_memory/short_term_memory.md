@@ -47,7 +47,47 @@ config = {"configurable": {"thread_id": "lc-10-demo"}}
 
 同一个 agent、同一个 checkpointer、同一个 `thread_id`，再次 `invoke(...)` 时就能读取之前保存的 messages。
 
-### 3.3 Checkpointer
+### 3.3 Config、context 与 thread_id
+
+`agent.invoke(...)` 里的 `config` 是给 LangGraph / LangChain 运行时看的调用配置，不是业务上下文，也不是记忆内容本身。
+
+使用 checkpointer 时，`thread_id` 需要放在固定位置：
+
+```python
+config = {"configurable": {"thread_id": "lc-10-demo"}}
+```
+
+这里有两个约定：
+
+- `configurable` 是运行配置中放可配置字段的固定区域。
+- `thread_id` 是 checkpointer 用来定位 thread state 的约定 key。
+
+因此，agent 运行时会自动读取 `config["configurable"]["thread_id"]`，用它决定本次调用要从哪条 thread 恢复 state，以及调用结束后把 state 保存回哪条 thread。
+
+不要把它写成：
+
+```python
+config = {"thread_id": "lc-10-demo"}
+```
+
+也不要只放进 runtime context：
+
+```python
+context = Context(thread_id="lc-10-demo")
+```
+
+工具确实可以通过 `runtime.context.thread_id` 读到这个值，但 checkpointer 不会自动从业务 context 中取 `thread_id`。如果希望短期记忆生效，仍然要把它放到 `config["configurable"]` 里。
+
+可以这样区分：
+
+- `config`：给框架运行时看的配置，例如 `thread_id`、`recursion_limit`、callbacks 等。
+- `context`：给 prompt、tools、middleware 看的业务上下文，例如 `user_id`、语言、权限、租户等。
+- `checkpointer`：根据 `configurable.thread_id` 保存和恢复 thread state。
+- `state["messages"]`：真正保存下来的短期记忆内容。
+
+一句话：`configurable.thread_id` 是短期记忆的“地址”，`checkpointer` 是保存和恢复状态的机制，`messages` 才是短期记忆的主要内容。
+
+### 3.4 Checkpointer
 
 Checkpointer 负责把 graph state 保存成 checkpoint。对 agent 来说，它让多轮调用之间能恢复同一条 thread 的 state。
 
@@ -66,7 +106,7 @@ agent = create_agent(
 
 注意：`InMemorySaver` 只保存在当前 Python 进程内。程序退出后，内存里的 checkpoint 会消失。
 
-### 3.4 State 与 Messages
+### 3.5 State 与 Messages
 
 LangChain agent 默认使用 `AgentState` 管理短期记忆。短期记忆最核心的字段是：
 
