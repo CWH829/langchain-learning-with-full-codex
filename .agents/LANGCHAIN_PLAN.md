@@ -102,7 +102,7 @@
 | ✅ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 | 2026-06-16 21:05 | 2026-06-17 14:14 | R6 | 学习者已完成上下文工程实践，观察了 `@dynamic_prompt`、`@wrap_model_call`、`request.override(tools=...)`、`ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录动态 prompt 不进入 `result["messages"]`、`max_materials` 只限制单次工具返回等结论。 |
 | ✅ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | 多轮对话保留上下文 | `with`、资源管理 | 2026-06-17 14:28 | 2026-06-17 16:35 | R6 | 学习者已完成 short-term memory 实践，理解 `InMemorySaver`、`checkpointer`、`thread_id`、同线程多轮 messages 追加、不同线程状态隔离，以及 `agent.get_state(config)` 查看 checkpoint state。 |
 | ✅ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | 存取用户偏好示例 | 数据结构、序列化 | 2026-06-17 16:59 | 2026-06-17 21:43 | R6 | 学习者已完成长期记忆实践，理解 `InMemoryStore`、`namespace`、`key`、`runtime.store`、`runtime.context.user_id`，并观察了同一用户跨 thread 读取偏好与不同用户隔离。 |
-| ⬜ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | 文本切分 + 向量检索 | 文件读写、列表处理 |  |  | R6 |  |
+| 🟡 | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | 文本切分 + 向量检索 | 文件读写、列表处理 | 2026-06-17 21:56 |  | R6 | 已启动；已补充阶段学习文档、手写骨架和 `langchain-text-splitters==1.1.2` 依赖。 |
 | ⬜ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 |  |  | R6,R11 |  |
 | ⬜ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | 给 agent 增加检索工具 | 控制流、结果校验 |  |  | R6,R11 |  |
 | ⬜ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | 让 agent 调用 MCP server | async/await、客户端生命周期 |  |  | R1,R2,R6 |  |
