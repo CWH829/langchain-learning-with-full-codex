@@ -46,6 +46,31 @@ Agent = Model + Tools + Prompt + Middleware + Loop
 
 这和 Java 生态里 Spring 把旧模块迁走、主包只保留推荐能力的思路有点像：旧 API 不一定马上消失，但新项目应该优先使用官方当前推荐的入口。
 
+## 图解
+
+### 版本边界判断图
+
+```mermaid
+flowchart TD
+    Example["看到一个 LangChain 示例"] --> CheckVersion{"是否明确属于 v1 文档？"}
+    CheckVersion -->|是| UseV1["优先按 v1 API 学习"]
+    CheckVersion -->|否| CheckImport{"导入路径和 API 是否符合 v1？"}
+    CheckImport -->|符合| VerifyDocs["回到官方 v1 文档核对"]
+    CheckImport -->|不符合| OldMaterial["视为旧资料或概念参考"]
+
+    UseV1 --> CreateAgent["create_agent 等 v1 API"]
+    VerifyDocs --> CreateAgent
+    OldMaterial --> ConceptOnly["只借鉴概念<br/>不直接照搬代码"]
+    OldMaterial --> Classic["可能涉及 langchain-classic"]
+    Classic --> Boundary["识别新旧边界"]
+```
+
+读图重点：
+
+- v1 官方文档是默认判断基准。
+- 旧教程可以帮助理解概念，但不能直接照搬导入路径和 API。
+- `langchain-classic` 是兼容旧生态的重要边界信号。
+
 ## 代码实践
 
 本节的实践目标是确认“导入路径该看哪里”。按官方 v1 文档，最小导入应长这样：

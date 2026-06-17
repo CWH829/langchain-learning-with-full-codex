@@ -224,6 +224,39 @@ messages = [
 
 模型会基于这组上下文生成下一条 `AIMessage`。如果顺序错了，模型看到的上下文逻辑就会错。系统消息通常放在最前面，用来设定整体行为；用户消息表示当前问题；历史 AI 消息表示模型之前说过什么。
 
+## 图解
+
+### Messages 在模型上下文中的位置
+
+```mermaid
+flowchart TD
+    Input["输入"] --> Form{"输入形态"}
+    Form --> String["字符串"]
+    Form --> MessageList["messages 列表"]
+
+    String --> Normalize["转换为 HumanMessage"]
+    Normalize --> Context["模型上下文"]
+    MessageList --> Context
+
+    Context --> System["SystemMessage<br/>规则/角色"]
+    Context --> Human["HumanMessage<br/>用户输入"]
+    Context --> AI["AIMessage<br/>模型响应"]
+    Context --> Tool["ToolMessage<br/>工具结果"]
+
+    Context --> Model["Chat model"]
+    Model --> Response["AIMessage"]
+    Response --> Content["content / text"]
+    Response --> Blocks["content_blocks"]
+    Response --> Usage["usage_metadata"]
+    Response --> ToolCalls["tool_calls"]
+```
+
+读图重点：
+
+- messages 是模型上下文的基本结构。
+- 字符串输入只是简化写法，复杂场景要回到 messages。
+- `AIMessage` 不只有文本，还可能包含 content blocks、usage、tool calls 等元数据。
+
 ## 手写实践任务
 
 请你亲手完成 `learning/LC_04_messages/message_flow_skeleton.py`：

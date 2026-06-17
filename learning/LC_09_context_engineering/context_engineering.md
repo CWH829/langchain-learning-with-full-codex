@@ -303,6 +303,40 @@ summarization（摘要）是典型的 life-cycle context。
 3. 写入了 `store`：跨会话后续可见。
 4. 使用 summary 替换历史消息：属于 persistent，因为后续消息历史已经变了。
 
+## 图解
+
+### 三类上下文与生命周期
+
+```mermaid
+flowchart TD
+    Agent["Agent"] --> ModelContext["Model context<br/>模型本次能看到什么"]
+    Agent --> ToolContext["Tool context<br/>工具能读取/写入什么"]
+    Agent --> LifeCycle["Life-cycle context<br/>agent 循环中间发生什么"]
+
+    ModelContext --> DynamicPrompt["@dynamic_prompt"]
+    ModelContext --> WrapModel["@wrap_model_call"]
+    ModelContext --> Override["request.override(...)"]
+
+    ToolContext --> RuntimeContext["runtime.context"]
+    ToolContext --> RuntimeState["runtime.state"]
+    ToolContext --> Store["store"]
+
+    LifeCycle --> Messages["messages"]
+    LifeCycle --> Summary["summarization"]
+    LifeCycle --> Trim["trim / delete"]
+
+    RuntimeContext -. "transient" .-> DynamicPrompt
+    RuntimeState -. "persistent within thread" .-> Messages
+    Store -. "persistent across threads" .-> ToolContext
+```
+
+读图重点：
+
+- model context 关注“模型看到什么”。
+- tool context 关注“工具能读写什么”。
+- lifecycle context 关注“agent 执行过程中如何管理消息、摘要和状态”。
+- transient / persistent 的区别会直接影响上下文是否跨调用保留。
+
 ## 成本控制：为什么不要把所有资料塞进 prompt
 
 上下文越多，不代表回答越好。常见问题：

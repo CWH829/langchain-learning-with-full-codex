@@ -100,6 +100,32 @@ AgentService
 
 Python 的函数类型标注类似 Java 方法签名的一部分，但默认不会像 Java 编译器那样强制校验。LangChain 会读取这些标注来生成工具 schema，因此这里的类型标注对 agent 很重要。
 
+## 图解
+
+### 最小 agent 调用链
+
+```mermaid
+flowchart LR
+    User["用户输入"] --> Invoke["agent.invoke(...)"]
+    Invoke --> Agent["Agent"]
+    Agent --> Model["Chat model"]
+    Agent --> Tools["Tools"]
+    Tools --> Weather["get_weather(...)"]
+    Model --> Decision{"是否需要工具？"}
+    Decision -->|否| Answer["直接回答"]
+    Decision -->|是| ToolCall["生成 tool call"]
+    ToolCall --> Weather
+    Weather --> ToolResult["工具结果"]
+    ToolResult --> Agent
+    Agent --> Final["最终回答"]
+```
+
+读图重点：
+
+- `agent.invoke(...)` 是一次完整 agent 调用的入口。
+- model 负责推理和决定是否需要工具。
+- tools 是 agent 可以调用的外部能力，不是用户直接调用的函数。
+
 ## 本节手写任务
 
 请在 `learning/LC_02_minimal_agent/hello_agent.py` 里亲手补全三处：

@@ -157,6 +157,31 @@ nickname: str | None = None
 
 这里的 `str | None` 表示值可以是字符串，也可以是 `None`；后面的 `= None` 表示不传时默认就是 `None`。这和 LC-06 里 Pydantic 的“可为空”和“可省略”概念类似，但这里是普通 Python dataclass，不负责复杂校验。
 
+## 图解
+
+### Runtime context 注入链路
+
+```mermaid
+flowchart TD
+    ContextSchema["context_schema=UserContext"] --> Agent["create_agent(...)"]
+    UserContext["UserContext<br/>user_name / level / goal"] --> Invoke["agent.invoke(..., context=...)"]
+    Invoke --> Agent
+    Agent --> ToolCall["工具调用"]
+    ToolCall --> Runtime["ToolRuntime[UserContext]"]
+    Runtime --> RuntimeContext["runtime.context"]
+    Runtime --> RuntimeState["runtime.state"]
+    RuntimeContext --> ToolLogic["工具读取用户信息/配置"]
+    RuntimeState --> StateUpdate["图状态读写"]
+    ToolLogic --> ToolResult["工具返回结果"]
+    StateUpdate --> ToolResult
+```
+
+读图重点：
+
+- `context_schema` 描述运行期上下文的结构。
+- `agent.invoke(..., context=...)` 提供本次调用的上下文值。
+- 工具通过 `ToolRuntime` 读取 `runtime.context`，必要时也可以接触 `runtime.state`。
+
 ## 本阶段手写实践任务
 
 请你亲手完成 `learning/LC_07_runtime/runtime_context_skeleton.py`：

@@ -102,6 +102,36 @@ model = init_chat_model(
 
 上面第二段是理解用片段，不建议直接把 key 字符串写入代码。
 
+## 图解
+
+### Model 配置关系图
+
+```mermaid
+flowchart TD
+    Env[".env / 系统环境变量"] --> Settings["ModelSettings"]
+    Settings --> Provider["provider<br/>如 openai"]
+    Settings --> ModelName["model name<br/>如 deepseek-v4-flash"]
+    Settings --> BaseUrl["base_url"]
+    Settings --> ApiKey["api_key"]
+    Settings --> Params["temperature / timeout / retries"]
+
+    Provider --> Init["init_chat_model(...)"]
+    ModelName --> Init
+    BaseUrl --> Init
+    ApiKey --> Init
+    Params --> Init
+
+    Init --> ChatModel["Chat model 实例"]
+    ChatModel --> DirectInvoke["model.invoke(...)"]
+    ChatModel --> Agent["create_agent(model=...)"]
+```
+
+读图重点：
+
+- provider、model name、base URL 和 API key 是不同层面的配置。
+- `init_chat_model(...)` 把配置转成统一的 chat model 接口。
+- 同一个 chat model 既可以直接调用，也可以交给 agent 使用。
+
 ## 手写实践任务
 
 本阶段代码实践不要急着写复杂 agent。先把 LC-02 里的模型创建逻辑抽出来。

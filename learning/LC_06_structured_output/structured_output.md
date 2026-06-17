@@ -190,6 +190,30 @@ priority: Literal["low", "medium", "high"]
 
 这比写成普通 `str` 更稳定，因为模型和校验器都能看到可选范围。
 
+## 图解
+
+### Structured output 输出链路
+
+```mermaid
+flowchart LR
+    Schema["Schema<br/>Pydantic / dataclass / TypedDict"] --> ResponseFormat["response_format"]
+    ResponseFormat --> Agent["create_agent(...)"]
+    Agent --> Model["Chat model"]
+    Model --> Strategy{"结构化策略"}
+    Strategy --> ProviderStrategy["ProviderStrategy<br/>模型原生结构化输出"]
+    Strategy --> ToolStrategy["ToolStrategy<br/>工具调用模拟结构化输出"]
+    ProviderStrategy --> Validate["按 schema 校验/解析"]
+    ToolStrategy --> Validate
+    Validate --> Structured["result['structured_response']"]
+    Structured --> Dump["model_dump() / 字典化"]
+```
+
+读图重点：
+
+- schema 是结构化输出的契约。
+- `response_format` 把 schema 接到 agent 输出协议上。
+- 最终读取重点通常是 `structured_response`，而不是自由文本。
+
 ## 本阶段手写实践任务
 
 请你亲手完成 `learning/LC_06_structured_output/structured_output_skeleton.py`：

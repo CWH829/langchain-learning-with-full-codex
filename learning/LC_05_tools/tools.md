@@ -111,6 +111,33 @@ print(ai_message.tool_calls)
 
 手动流程有助于理解 LC-04 留下的问题：`AIMessage.tool_calls` 为什么存在，以及 `ToolMessage` 为什么需要 `tool_call_id`。
 
+## 图解
+
+### Tool calling 的两条路径
+
+```mermaid
+flowchart TD
+    ToolDef["@tool + docstring + type hints"] --> Schema["生成 tool schema"]
+    Schema --> BoundModel["model.bind_tools(...)"]
+    Schema --> Agent["create_agent(..., tools=...)"]
+
+    BoundModel --> ModelInvoke["model.invoke(...)"]
+    ModelInvoke --> ToolCalls["AIMessage.tool_calls"]
+    ToolCalls --> ManualExec["学习者手动观察/执行"]
+
+    Agent --> AgentInvoke["agent.invoke(...)"]
+    AgentInvoke --> Decide["模型决定调用工具"]
+    Decide --> AutoExec["agent 自动执行工具"]
+    AutoExec --> ToolMessage["ToolMessage"]
+    ToolMessage --> FinalAnswer["最终回答"]
+```
+
+读图重点：
+
+- `@tool`、docstring 和 type hints 共同影响工具 schema。
+- `model.bind_tools(...)` 适合观察模型“想调用什么”。
+- `create_agent(..., tools=...)` 会把工具执行也纳入 agent loop。
+
 ## 本阶段手写实践任务
 
 请你亲手完成 `learning/LC_05_tools/tool_calling_skeleton.py`：

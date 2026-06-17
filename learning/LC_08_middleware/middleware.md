@@ -301,6 +301,34 @@ search_study_notes = tool(search_study_notes)
 
 先不必深究装饰器闭包细节。当前最重要的是理解：装饰器会改变函数在框架眼中的身份。
 
+## 图解
+
+### Middleware 在 agent loop 中的位置
+
+```mermaid
+flowchart TD
+    User["用户输入"] --> AgentLoop["Agent loop"]
+    AgentLoop --> BeforeModel["before_model / wrap_model_call"]
+    BeforeModel --> Model["Chat model"]
+    Model --> AfterModel["after_model / wrap_model_call"]
+    AfterModel --> NeedTool{"需要工具？"}
+    NeedTool -->|否| Final["最终回答"]
+    NeedTool -->|是| BeforeTool["before_tool / wrap_tool_call"]
+    BeforeTool --> Tool["Tool"]
+    Tool --> AfterTool["after_tool / wrap_tool_call"]
+    AfterTool --> AgentLoop
+
+    BeforeModel -.-> Logging["logging"]
+    BeforeTool -.-> HITL["human-in-the-loop"]
+    AgentLoop -.-> Summary["summarization"]
+```
+
+读图重点：
+
+- middleware 不是独立执行器，而是插入 agent loop 的控制逻辑。
+- logging、HITL、summarization 分别适合插入不同位置。
+- wrap-style hooks 更像包住一次调用，node-style hooks 更像在节点前后插入步骤。
+
 ## 本阶段手写实践任务
 
 请亲手完成 `learning/LC_08_middleware/middleware_skeleton.py`：
