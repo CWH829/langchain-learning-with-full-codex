@@ -23,6 +23,7 @@ from langchain.agents.middleware import (
 )  # 核心
 from langchain.tools import tool
 from langgraph.checkpoint.memory import InMemorySaver
+from langgraph.types import Command
 
 from learning.LC_03_models.model_config_skeleton import build_chat_model
 
@@ -197,7 +198,7 @@ def invoke_logging_agent(question: str) -> dict:
     return agent.invoke({"messages": [{"role": "user", "content": question}]})
 
 
-def invoke_hitl_until_interrupt(question: str) -> tuple[dict, dict]:
+def invoke_hitl_until_interrupt(question: str) -> tuple[dict, dict, Any]:
     """触发 HITL 中断，返回 config 和第一次 invoke 的结果。"""
     agent = build_hitl_agent()
 
@@ -211,7 +212,7 @@ def invoke_hitl_until_interrupt(question: str) -> tuple[dict, dict]:
         config=config,  # 重点
         version="v2",  # HITL 场景建议按官方示例带上它，result 用来获得新版 interrupt 结构
     )
-    return config, result
+    return config, result, agent
 
 
 def inspect_result(result: Any) -> None:
@@ -258,10 +259,18 @@ def main() -> None:
 
     print("\n\n=== 测试 HITL 中间件 ===")
     hitl_question = "请根据 LC-08 的学习重点，发布一段简短学习总结。"
-    config, hitl_result = invoke_hitl_until_interrupt(hitl_question)
+    config, hitl_result, hitl_agent = invoke_hitl_until_interrupt(hitl_question)
     print("=== hitl config ===")
     print(config)
     inspect_result(hitl_result)
+
+    approve_hitl_result = hitl_agent.invoke(
+        Command(resume={"decisions": [{"type": "approve"}]}),  # 恢复打断状态，用户提交同意
+        config=config,
+        version="v2",
+    )
+    print("\n\n===  HITL 决定 ===")
+    inspect_result(approve_hitl_result)  # ✅ 学习总结已成功发布！以下是发布内容的回顾：
 
     print("\n\n=== 测试 SUMMARY 上下文压缩 中间件 ===")
     # todo
