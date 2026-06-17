@@ -31,54 +31,41 @@
 9. 讲解或记录英文术语时可以保留原文；如果属于较高级或不直观的词汇，可在后面用中文括号补充翻译，辅助理解，例如：`transient（短暂的）`。
 10. 遇到 Python 特殊语法、特色功能或特性时，按实际需要在学习文档或代码注释中简单解释。
 11. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
-12. 学习完成后，先检查代码明显问题、可优化处和实践任务覆盖情况；再结合实践，更新学习文档，如知识细节、实践记录、排错记录和总结等；最后总结阶段摘要。
-13. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更。
+12. 学习完成后，先检查代码明显问题、可优化处和实践任务覆盖情况；再结合实践，更新学习文档，如知识细节、实践记录、排错记录和总结等；最后在 `.agents/STAGE_SUMMARIES.md` 中总结阶段摘要。
+13. 学习计划变化时，只修改必要内容，并在 `.agents/CHANGE_LOG.md` 中追加摘要；变更记录只记录计划本身的变更。
 
 状态列使用 emoji 记录：`⬜` 表示未开始，`🟡` 表示进行中，`✅` 表示已完成，`⏭️` 表示跳过。
 
 所有时间格式规定：`YYYY-MM-DD HH:mm`
 
-## 3. 环境与命令
 
-```bash
-# 接入 LangChain 官方文档 MCP
-codex mcp add langchain-docs --url https://docs.langchain.com/mcp
-
-# 初始化 Python 项目
-uv init
-
-# 基础依赖
-uv add langchain==1.3.9 langgraph==1.2.5 langchain-mcp-adapters==0.3.0
-
-# 开发依赖
-uv add --dev pytest==9.0.3 ruff==0.15.17
-
-# 同步依赖
-uv sync
-```
-
-模型 provider、API key、额外集成包按实际学习任务再安装，不在初始计划中固定。
-
-## 4. 建议项目结构
+## 3. 建议项目结构
 
 ```text
 .
 ├── AGENTS.md                         # Codex 协作约束
 ├── .agents/
-│   └── LANGCHAIN_PLAN.md             # 完整学习计划
+│   ├── LANGCHAIN_PLAN.md             # 学习路线、阶段状态和执行说明
+│   ├── STAGE_SUMMARIES.md            # 阶段摘要，按需定向读取
+│   └── CHANGE_LOG.md                 # 计划变更记录，仅用于审计
 ├── README.md
 ├── pyproject.toml
 ├── src/
 │   └── langchain_study/
 ├── learning/
 │   ├── LC_xx_<topic>/                 # LangChain 主线阶段
+│   │   ├── <topic>.md                 # 阶段学习文档
+│   │   ├── <topic>_skeleton.py        # 学习者手写练习骨架
+│   │   └── <topic>_skeleton.origin.py # 初始骨架副本
 │   └── PY_xx_<topic>/                 # Python 补充知识
 └── tests/
 ```
 
-`learning/` 按阶段组织学习材料：`LC_xx_*` 放 LangChain 主线阶段，`PY_xx_*` 放 Python 补充知识。目录名使用下划线而不是连字符，便于必要时作为 Python import 路径使用。每个阶段目录不强制固定文件名或文件数量，按实际学习内容放置代码、笔记、排障记录、数据样例等。
+`.agents/` 放学习推进相关的 agent 入口文件：`LANGCHAIN_PLAN.md` 记录路线、阶段状态和执行说明；`STAGE_SUMMARIES.md` 记录阶段摘要；`CHANGE_LOG.md` 仅用于追溯计划变更。
 
-## 5. 资料来源与优先级
+`learning/` 按阶段组织学习材料：`LC_xx_*` 放 LangChain 主线阶段，`PY_xx_*` 放 Python 补充知识。目录名使用下划线而不是连字符，便于必要时作为 Python import 路径使用。LangChain 主线阶段目录默认包含一个阶段学习文档、一个手写骨架文件和一个 origin 初始骨架副本；如阶段内容确有需要，可按实际情况补充排障记录、数据样例等其他文件。
+
+## 4. 资料来源与优先级
 
 | ID | 优先级 | 来源 | 用途 | 备注 |
 | --- | --- | --- | --- | --- |
@@ -97,7 +84,7 @@ uv sync
 
 具体执行约束以“Codex Agent 执行说明”为准。
 
-## 6. 知识点总表
+## 5. 知识点总表
 
 | 状态 | ID | 主题 | 知识点 | 最小目标 | 代码实践 | Python 要点 | 开始时间 | 完成时间 | 资源 | 备注 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -112,7 +99,7 @@ uv sync
 | ✅ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 2026-06-15 19:19 | 2026-06-16 18:39 | R6 | 学习者已补全 logging middleware、HITL 人工确认和 summarization 构造实践；已观察 node-style hooks 的执行时机、`GraphOutput.value` / `GraphOutput.interrupts`、checkpointer + `thread_id` 的作用，并完成阶段文档复盘。 |
 | ✅ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 | 2026-06-16 21:05 | 2026-06-17 14:14 | R6 | 学习者已完成上下文工程实践，观察了 `@dynamic_prompt`、`@wrap_model_call`、`request.override(tools=...)`、`ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录动态 prompt 不进入 `result["messages"]`、`max_materials` 只限制单次工具返回等结论。 |
 | ✅ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | 多轮对话保留上下文 | `with`、资源管理 | 2026-06-17 14:28 | 2026-06-17 16:35 | R6 | 学习者已完成 short-term memory 实践，理解 `InMemorySaver`、`checkpointer`、`thread_id`、同线程多轮 messages 追加、不同线程状态隔离，以及 `agent.get_state(config)` 查看 checkpoint state。 |
-| ⬜ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | 存取用户偏好示例 | 数据结构、序列化 |  |  | R6 |  |
+| 🟡 | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | 存取用户偏好示例 | 数据结构、序列化 | 2026-06-17 16:59 |  | R6 | 已启动；已核对官方 Long-term memory、Memory overview、Persistence 与 Stores 文档；本阶段先用 `InMemoryStore` 练习 `store`、`namespace`、`key`、`runtime.store` 和跨 thread 用户偏好存取。 |
 | ⬜ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | 文本切分 + 向量检索 | 文件读写、列表处理 |  |  | R6 |  |
 | ⬜ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 |  |  | R6,R11 |  |
 | ⬜ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | 给 agent 增加检索工具 | 控制流、结果校验 |  |  | R6,R11 |  |
@@ -123,7 +110,7 @@ uv sync
 | ⬜ | LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 | 可选 subagent demo | 上下文隔离 |  |  | R6,R9 | 可选 |
 | ⬜ | LC-20 | 综合小项目 | agent + tools + RAG + MCP + tracing/eval | 完成可复盘项目 | 做一个个人知识库问答 agent | 项目组织、测试、提交 |  |  | R1-R9 |  |
 
-## 7. Python 补充学习索引
+## 6. Python 补充学习索引
 
 | 状态 | ID | 主题 | 触发场景 | 学习目标 | 备注 |
 | --- | --- | --- | --- | --- | --- |
@@ -136,37 +123,18 @@ uv sync
 | ⬜ | PY-07 | list/dict comprehension | 数据处理 | 能读懂简洁表达式 | 不必一开始强记 |
 | ⬜ | PY-08 | pytest | eval / tests | 能写最小测试 | 后续项目化需要 |
 
-## 8. 学习记录规范
+## 7. 学习记录规范
 
 学习记录只记录有复盘价值的信息。每完成或阶段性推进一个知识点时，按实际情况更新：
 
 - 知识点总表：状态、开始时间、完成时间、关键备注
-- 阶段摘要记录表：按阶段记录核心结论、关键 API / 概念、后续依赖
+- `.agents/STAGE_SUMMARIES.md` 阶段摘要记录表：按阶段记录核心结论、关键 API / 概念、后续依赖
 - `learning/` 对应阶段目录：学习文档、手写骨架、origin 副本
 - 学习文档：记录完整知识细节、实践记录、观察结果、核心结论、阶段总结等
 - 备注：只记录阻塞、偏差、关键决策和下次动作，不复述正文
 - Git：完成阶段性改动后，记录本次改动摘要，并只提供建议提交信息
 
-## 9. 阶段摘要记录表
-
-每个阶段完成后，在本节按阶段追加简短摘要，优先服务于后续阶段恢复上下文。摘要控制在几行到一小段。
-
-| 阶段 | 摘要 |
-| --- | --- |
-| LC-xx 阶段名 | - 核心结论：<br>- 关键 API / 概念：<br>- 后续依赖： |
-| LC-00 项目初始化 | - 核心结论：完成 LangChain v1 学习仓库初始化，确立 `uv` + `src/` 包结构 + `.agents/` 学习计划入口。<br>- 关键 API / 概念：`pyproject.toml`、`uv sync`、虚拟环境、`hatchling` 构建后端、`src/langchain_study` 可复用包。<br>- 后续依赖：后续阶段以 `.agents/LANGCHAIN_PLAN.md` 推进进度，以 `learning/` 按阶段沉淀材料；环境依赖以 `pyproject.toml` 和 `uv.lock` 为准。 |
-| LC-01 版本边界 | - 核心结论：确认学习范围以 LangChain v1 为准，识别 `create_agent` 等新 API 与旧教程、`langchain-classic` 的边界。<br>- 关键 API / 概念：LangChain v1、`create_agent`、包名与导入路径、官方文档优先级。<br>- 后续依赖：后续讲解 API 前继续优先核对官方文档；旧资料只能作为概念参考，不能直接照搬导入路径。 |
-| LC-02 最小 agent | - 核心结论：跑通最小 agent 调用链，理解 model、tools 与 `agent.invoke(...)` 的基本协作方式。<br>- 关键 API / 概念：`create_agent`、tool 函数、`agent.invoke(...)`、DeepSeek OpenAI-compatible API、`langchain-openai`。<br>- 后续依赖：后续阶段复用 OpenAI-compatible 模型接入方式；环境基线切到 Python 3.12 + `uv`，API 额度问题优先用 DeepSeek 方案绕开。 |
-| LC-03 Models | - 核心结论：模型 provider 和参数可以封装为可切换配置，模型调用不应散落在练习代码各处。<br>- 关键 API / 概念：chat model、provider、`ChatOpenAI` integration、环境变量、`python-dotenv`、配置对象。<br>- 后续依赖：后续练习默认通过配置读取模型参数；涉及 provider、base URL、API key 时优先复用已有配置思路。 |
-| LC-04 Messages | - 核心结论：理解 LangChain 消息流结构，能区分 system、user、assistant、tool message 以及模型响应中的内容块和元数据。<br>- 关键 API / 概念：`SystemMessage`、`HumanMessage`、`AIMessage`、`content`、`text`、`content_blocks`、`usage_metadata`。<br>- 后续依赖：后续做上下文工程、memory、tool calling 时，需要把 messages 视为模型上下文的基础结构。 |
-| LC-05 Tools | - 核心结论：掌握自定义工具定义、参数 schema 生成和模型 tool calling 到 agent 自动工具调用的基本流程。<br>- 关键 API / 概念：`@tool`、docstring、type hints、`model.bind_tools(...)`、`tool_calls`、`agent.invoke(...)`。<br>- 后续依赖：后续 agent、RAG、MCP 阶段会继续复用工具抽象；工具参数描述、异常处理和类型标注会直接影响模型调用质量。 |
-| LC-06 Structured Output | - 核心结论：掌握用结构化 schema 约束模型输出，能从自然语言响应升级到稳定的数据对象。<br>- 关键 API / 概念：`response_format`、Pydantic `BaseModel`、`Field(...)`、`ToolStrategy`、`structured_response`、`model_dump()`。<br>- 后续依赖：后续 eval、RAG 结果校验和 agent 输出协议可复用结构化输出；DeepSeek V4 Pro thinking mode 与 `tool_choice` 冲突时优先关闭 thinking。 |
-| LC-07 Runtime | - 核心结论：理解运行期上下文可以在 agent 调用和工具执行之间传递，用于注入用户信息、配置或状态。<br>- 关键 API / 概念：`context_schema`、`agent.invoke(..., context=...)`、`ToolRuntime`、`runtime.context`、`runtime.state`。<br>- 后续依赖：后续 context engineering、memory 和 middleware 会继续依赖 runtime context；遇到 `InvalidUpdateError: Expected dict` 时优先检查图状态更新返回值。 |
-| LC-08 Middleware | - 核心结论：middleware 可在 agent 执行链路中加入日志、人工确认、摘要等控制逻辑，是控制 agent 行为的重要扩展点。<br>- 关键 API / 概念：middleware、node-style hooks、logging、HITL、summarization、`GraphOutput.value`、`GraphOutput.interrupts`、checkpointer、`thread_id`。<br>- 后续依赖：后续上下文工程和 memory 阶段会继续使用 checkpointer、thread_id 与摘要思路；人工确认流程需要理解 interrupt 和 resume 的状态恢复。 |
-| LC-09 上下文工程 | - 核心结论：上下文工程关注模型本次能看到什么、工具能读取什么，以及上下文修改是 transient 还是 persistent；动态 prompt 是临时写入 `system_message`，不会直接出现在 `result["messages"]`。<br>- 关键 API / 概念：`@dynamic_prompt`、`@wrap_model_call`、`ModelRequest`、`ModelResponse`、`request.override(...)`、`request.system_message`、`request.tools`、`ToolRuntime`、`runtime.context`、`runtime.state`、`context_schema`。<br>- 后续依赖：LC-10/LC-11 继续区分 state 与 store 的生命周期；后续 RAG 阶段会复用“按需加载少量资料，而不是把全部资料塞进 prompt”的判断框架。 |
-| LC-10 Short-term Memory | - 核心结论：短期记忆是 thread-scoped 的 agent state，核心内容是 `messages`；同一个 `thread_id` 会继续追加历史，不同 `thread_id` 之间相互隔离。<br>- 关键 API / 概念：`InMemorySaver`、`checkpointer`、`configurable.thread_id`、`agent.invoke(..., config=...)`、`agent.get_state(config)`、state snapshot、Python `with` 资源管理。<br>- 后续依赖：LC-11 将继续区分短期 thread state 与长期 store；后续长对话需要结合 trim、delete 或 summarization 控制 messages 成本。 |
-
-## 10. 完成标准
+## 8. 完成标准
 
 | 层级 | 标准 |
 | --- | --- |
@@ -174,45 +142,3 @@ uv sync
 | 主线完成 | LC-00 到 LC-17 已完成 |
 | 进阶完成 | LC-18 到 LC-20 至少完成 2 项 |
 | 可项目化 | 能独立搭建 agent + tools + RAG + MCP + LangSmith trace/eval |
-
-## 11. 变更记录
-
-| 时间 | 变更内容 | 影响范围 |
-| --- | --- | --- |
-| 2026-06-12 | 生成 LangChain 系统学习计划初版 | 全文 |
-| 2026-06-13 | 1. 迁移完整计划到 `.agents/LANGCHAIN_PLAN.md`。<br>2. 锁定 LangChain v1 相关依赖版本。<br>3. 调整建议项目结构，移除根目录 `LANGCHAIN_PLAN.md` 入口文件。<br>4. 将代码注释、Git 提交信息等协作约束收敛到根目录 `AGENTS.md`。 | 文件用途、元信息、环境与命令、建议项目结构、执行说明、LC-00 |
-| 2026-06-13 | 调整学习推进方式：必要动作保留，输出形式按知识点灵活安排；练习题、小任务、常见坑等改为按需补充。 | 执行说明、学习推进协议、学习记录规范 |
-| 2026-06-13 | 调整协作方式：代码实践改为学习者手写为主，Codex 负责讲解、知识笔记、骨架提示、排错引导和进度记录；默认不代写完整实现、不主动跑测试。 | 元信息、执行说明、学习推进协议、学习记录规范、LC-02 |
-| 2026-06-13 | 知识点总表状态列移到最前，改用 Windows emoji 记录；完成状态要求达到知识点目标或学习者明确表示学完，不能刚开始就标完成。 | 执行说明、知识点总表、学习记录规范 |
-| 2026-06-13 | Git 提交流程改为 Codex 只提供建议提交信息，学习者自行审核并手动提交。 | 学习记录规范 |
-| 2026-06-13 | 增加手动处理原则：有学习价值的环境、依赖、软件安装、参数和环境变量配置问题，由 Codex 引导学习者手动解决。 | 执行说明、协作约束 |
-| 2026-06-13 | 项目学习材料改为按阶段目录组织：`learning/LC-xx_*` 和 `learning/PY-xx_*` 收纳对应阶段的代码、笔记和排障记录，不再按 `examples/`、`notes/` 类型拆分。 | 建议项目结构、知识点总表、Python 补充学习索引、学习记录规范 |
-| 2026-06-13 | 细化阶段推进与记录规则：学习后需要补充实践记录或总结；未开始阶段不提前固定产出文件；Python 补充学习索引状态列改用与知识点总表一致的 emoji。 | 执行说明、知识点总表、Python 补充学习索引 |
-| 2026-06-13 | 调整 Git 记录规范表述：提供建议提交信息和改动摘要，学习者自行手动提交。 | 学习记录规范 |
-| 2026-06-13 | 增加新阶段启动前确认规则：涉及资料检索、官方文档核对、知识点整理、文件生成等操作前，Codex 先提醒学习者确认智能程度为“高”，等待回复后再继续。 | 执行说明、协作约束 |
-| 2026-06-13 | 增加 Python 手写骨架 origin 副本规则：创建骨架文件时可同步保留最初始副本，便于未来复用或对照。 | 执行说明、协作约束 |
-| 2026-06-14 | 调整 `learning/` 阶段目录命名：将 `LC-xx_*`、`PY-xx_*` 改为 `LC_xx_*`、`PY_xx_*`，避免连字符影响 Python import。 | 建议项目结构、知识点总表、Python 补充学习索引 |
-| 2026-06-14 | 1. 取消默认 Java 视角类比，后续讲解聚焦 LangChain 与 Python 学习主题本身。<br>2. 明确阶段文档策略：生成时尽量完整、丰富，覆盖当前知识点关键细节；阶段完成后结合实践继续补全为可复习的完整知识文档，而不只是追加实践记录或总结。<br>3. 学习推进动作改为参考项，由 Codex 按实际内容灵活判断和规划。 | 元信息、执行说明、学习推进协议、Python 补充学习索引、学习记录规范 |
-| 2026-06-14 | 补充智能程度确认规则：学习结束后补充完善学习文档前，也需要提醒学习者确认当前智能程度为“高”并等待回复。 | 执行说明 |
-| 2026-06-14 | 按新版执行说明调整“学习推进协议”：补充阶段开始和学习结束补文档前的智能程度确认，强调文档完整性、Python 按需解释、手写实践和排错引导。 | 学习推进协议 |
-| 2026-06-14 | 简化“学习推进协议”：第 2 节保留硬性执行约束，第 6 节只保留知识点推进节奏，避免两处重复维护同一套规则。 | 学习推进协议 |
-| 2026-06-14 | 调整“学习记录规范”：聚焦记录内容和复盘价值，不再重复代码实践、测试验证等执行约束。 | 学习记录规范 |
-| 2026-06-14 17:58 | 补充学习文档生成规则：阶段文档不必严格沿用上一阶段风格和结构，可按当前知识点灵活调整，适当参考即可。 | 执行说明 |
-| 2026-06-15 21:02 | 调整讲解风格约束：默认不强行套 Java 视角，但当概念确实适合类比时，可在句末括号中补充简短 Java 类比。 | 执行说明 |
-| 2026-06-15 23:26 | 补充学习完成后的代码检查规则：除检查代码问题和优化点外，还要对照当前实践任务检查关键练习点是否都已覆盖、是否有遗漏。 | 执行说明 |
-| 2026-06-16 12:21 | 补充实践结论沉淀规则：实践任务、观察重点或对比实验得到的观察结果、对比结果和关键输出含义，应在有复盘价值时写入学习文档。 | 执行说明、学习记录规范 |
-| 2026-06-16 21:39 | 补充术语讲解规则：高级或不直观的英文概念名词可保留英文，并在后面用中文括号补充翻译。 | 执行说明 |
-| 2026-06-16 22:30 | 新增“阶段摘要记录”小节，明确阶段完成后在独立小节沉淀轻量摘要，避免知识点总表备注过长。 | 学习记录规范、阶段摘要记录 |
-| 2026-06-16 22:37 | 删除知识点总表“产出”列，避免与阶段文档和阶段摘要重复维护。 | 知识点总表、学习记录规范 |
-| 2026-06-16 22:46 | 整理“Codex Agent 执行说明”，收敛执行规则并减少与学习记录、阶段摘要小节的重复。 | 执行说明 |
-| 2026-06-16 22:49 | 调整阶段摘要记录格式，改为“阶段 / 摘要”两列表格。 | 阶段摘要记录 |
-| 2026-06-16 23:10 | 补充 LC-00 项目初始化阶段摘要，作为阶段摘要记录样例。 | 阶段摘要记录 |
-| 2026-06-16 23:11 | 修正执行说明列表编号，并在删除“学习推进协议”后顺延后续章节编号。 | 执行说明、章节结构 |
-| 2026-06-16 23:11 | 转义 Python 补充学习索引中的联合类型竖线，修正 Markdown 表格列数。 | Python 补充学习索引 |
-| 2026-06-16 23:14 | 简化建议项目结构，不再展开具体阶段目录，只保留阶段目录命名模式。 | 建议项目结构 |
-| 2026-06-17 09:57 | 补充 LC-01 到 LC-08 的阶段摘要记录，便于后续阶段低成本恢复上下文。 | 阶段摘要记录表 |
-| 2026-06-17 11:20 | 补充实践骨架生成规则：尽量覆盖本阶段关键 API，并保留 TODO 供学习者手写。 | 执行说明 |
-| 2026-06-17 11:37 | 细化实践骨架规则：关键 TODO 附近可提供注释掉的核心代码片段，供学习者参考后手写。 | 执行说明 |
-| 2026-06-17 12:36 | 补充实践代码结构规则：避免函数拆分过细，连贯流程可适度聚合。 | 执行说明 |
-| 2026-06-17 12:43 | 细化实践代码结构规则：连贯流程可放在一起，但需用注释或代码段分块区分。 | 执行说明 |
-| 2026-06-17 16:26 | 删除实践代码函数拆分粒度的硬性规则，后续阶段骨架按具体学习任务灵活组织。 | 执行说明 |
