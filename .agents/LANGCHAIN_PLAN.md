@@ -26,14 +26,13 @@
 4. 每个知识点不强制套用固定模板，按实际内容灵活推进，通常包括：目标确认、官方核对、概念讲解、手写实践、实践后观察到的结论、排错记录、阶段总结和进度更新。
 5. 学习文档生成时应尽量完整、丰富，尽量覆盖该阶段知识点的关键细节和要点，不要有遗漏。
 6. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，尽量覆盖本阶段涉及的关键 API；关键 TODO 附近可提供注释掉的核心代码片段，便于学习者参考后手写；不直接生成完整实现，也不主动执行大量命令或测试验证，以节省时间和 token。
-7. 实践代码函数不要拆得过细；create_agent、invoke、question、result等连贯流程可以适度放在一起，但应通过目标注释分块区分。
-8. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
-9. 学习内容以 LangChain、LangGraph 和 Python 为主，默认不强行套 Java 视角；如果概念确实适合类比，可在句末用括号简短补充。
-10. 讲解或记录英文术语时可以保留原文；如果属于较高级或不直观的词汇，可在后面用中文括号补充翻译，辅助理解，例如：`transient（短暂的）`。
-11. 遇到 Python 特殊语法、特色功能或特性时，按实际需要在学习文档或代码注释中简单解释。
-12. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
-13. 学习完成后，先检查代码明显问题、可优化处和实践任务覆盖情况；再结合实践，更新学习文档，如知识细节、实践记录、排错记录和总结等；最后总结阶段摘要。
-14. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更。
+7. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
+8. 学习内容以 LangChain、LangGraph 和 Python 为主，默认不强行套 Java 视角；如果概念确实适合类比，可在句末用括号简短补充。
+9. 讲解或记录英文术语时可以保留原文；如果属于较高级或不直观的词汇，可在后面用中文括号补充翻译，辅助理解，例如：`transient（短暂的）`。
+10. 遇到 Python 特殊语法、特色功能或特性时，按实际需要在学习文档或代码注释中简单解释。
+11. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
+12. 学习完成后，先检查代码明显问题、可优化处和实践任务覆盖情况；再结合实践，更新学习文档，如知识细节、实践记录、排错记录和总结等；最后总结阶段摘要。
+13. 学习计划变化时，只修改必要内容，并在“变更记录”中追加摘要；该表只记录计划本身的变更。
 
 状态列使用 emoji 记录：`⬜` 表示未开始，`🟡` 表示进行中，`✅` 表示已完成，`⏭️` 表示跳过。
 
@@ -112,7 +111,7 @@ uv sync
 | ✅ | LC-07 | Runtime | runtime context、tool runtime | 理解运行期上下文 | 在工具中读取上下文 | 参数注入、可选参数 | 2026-06-15 16:07 | 2026-06-15 19:05 | R6 | 学习者已补全 runtime context 实践，理解 `context_schema`、`agent.invoke(..., context=...)`、工具中的 `ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录 `InvalidUpdateError: Expected dict` 的排错过程。 |
 | ✅ | LC-08 | Middleware | middleware、logging、HITL、summarization | 给 agent 加控制逻辑 | 加日志/摘要/人工确认 | 装饰器、函数式组合 | 2026-06-15 19:19 | 2026-06-16 18:39 | R6 | 学习者已补全 logging middleware、HITL 人工确认和 summarization 构造实践；已观察 node-style hooks 的执行时机、`GraphOutput.value` / `GraphOutput.interrupts`、checkpointer + `thread_id` 的作用，并完成阶段文档复盘。 |
 | ✅ | LC-09 | 上下文工程 | prompt、tool context、context lifecycle | 控制成本与行为 | 精简 system prompt + 按需加载资料 | 长文本拆分、上下文边界 | 2026-06-16 21:05 | 2026-06-17 14:14 | R6 | 学习者已完成上下文工程实践，观察了 `@dynamic_prompt`、`@wrap_model_call`、`request.override(tools=...)`、`ToolRuntime`、`runtime.context` 和 `runtime.state`；已记录动态 prompt 不进入 `result["messages"]`、`max_materials` 只限制单次工具返回等结论。 |
-| ⬜ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | 多轮对话保留上下文 | `with`、资源管理 |  |  | R6 |  |
+| ✅ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | 多轮对话保留上下文 | `with`、资源管理 | 2026-06-17 14:28 | 2026-06-17 16:35 | R6 | 学习者已完成 short-term memory 实践，理解 `InMemorySaver`、`checkpointer`、`thread_id`、同线程多轮 messages 追加、不同线程状态隔离，以及 `agent.get_state(config)` 查看 checkpoint state。 |
 | ⬜ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | 存取用户偏好示例 | 数据结构、序列化 |  |  | R6 |  |
 | ⬜ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | 文本切分 + 向量检索 | 文件读写、列表处理 |  |  | R6 |  |
 | ⬜ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 |  |  | R6,R11 |  |
@@ -132,7 +131,7 @@ uv sync
 | ✅ | PY-02 | type hints | 写 tools / schema | 能读写常见类型标注 | 已在 LC-05 Tools 中掌握函数参数和返回值类型标注，并理解 type hints 会影响工具 schema，但不等于 Python 运行时校验；LC-06 中继续使用 `Literal`、`list[str]`、<code>str &#124; None</code> 等常见类型标注。 |
 | ✅ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 已在 LC-03 接触 dataclass 配置对象，在 LC-06 完成 Pydantic `BaseModel`、`Field(...)`、`Literal`、`ValidationError` 思路和 `model_dump()` 序列化基础。 |
 | ✅ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 已在 LC-08 中结合 `@tool`、middleware hook 和 Java AOP 类比，理解装饰器用于包装/注册函数，以及框架按约定调用被注册函数的基本思路。 |
-| ⬜ | PY-05 | with | memory / client / file | 理解上下文管理器 | 关注资源进入、退出和异常清理 |
+| ✅ | PY-05 | with | memory / client / file | 理解上下文管理器 | 已在 LC-10 中结合数据库型 checkpointer 场景理解 `with ... as ...` 的资源进入、退出和异常清理作用。 |
 | ⬜ | PY-06 | async/await | MCP / async invoke | 能读懂异步调用 | 关注事件循环、协程和异步资源生命周期 |
 | ⬜ | PY-07 | list/dict comprehension | 数据处理 | 能读懂简洁表达式 | 不必一开始强记 |
 | ⬜ | PY-08 | pytest | eval / tests | 能写最小测试 | 后续项目化需要 |
@@ -165,6 +164,7 @@ uv sync
 | LC-07 Runtime | - 核心结论：理解运行期上下文可以在 agent 调用和工具执行之间传递，用于注入用户信息、配置或状态。<br>- 关键 API / 概念：`context_schema`、`agent.invoke(..., context=...)`、`ToolRuntime`、`runtime.context`、`runtime.state`。<br>- 后续依赖：后续 context engineering、memory 和 middleware 会继续依赖 runtime context；遇到 `InvalidUpdateError: Expected dict` 时优先检查图状态更新返回值。 |
 | LC-08 Middleware | - 核心结论：middleware 可在 agent 执行链路中加入日志、人工确认、摘要等控制逻辑，是控制 agent 行为的重要扩展点。<br>- 关键 API / 概念：middleware、node-style hooks、logging、HITL、summarization、`GraphOutput.value`、`GraphOutput.interrupts`、checkpointer、`thread_id`。<br>- 后续依赖：后续上下文工程和 memory 阶段会继续使用 checkpointer、thread_id 与摘要思路；人工确认流程需要理解 interrupt 和 resume 的状态恢复。 |
 | LC-09 上下文工程 | - 核心结论：上下文工程关注模型本次能看到什么、工具能读取什么，以及上下文修改是 transient 还是 persistent；动态 prompt 是临时写入 `system_message`，不会直接出现在 `result["messages"]`。<br>- 关键 API / 概念：`@dynamic_prompt`、`@wrap_model_call`、`ModelRequest`、`ModelResponse`、`request.override(...)`、`request.system_message`、`request.tools`、`ToolRuntime`、`runtime.context`、`runtime.state`、`context_schema`。<br>- 后续依赖：LC-10/LC-11 继续区分 state 与 store 的生命周期；后续 RAG 阶段会复用“按需加载少量资料，而不是把全部资料塞进 prompt”的判断框架。 |
+| LC-10 Short-term Memory | - 核心结论：短期记忆是 thread-scoped 的 agent state，核心内容是 `messages`；同一个 `thread_id` 会继续追加历史，不同 `thread_id` 之间相互隔离。<br>- 关键 API / 概念：`InMemorySaver`、`checkpointer`、`configurable.thread_id`、`agent.invoke(..., config=...)`、`agent.get_state(config)`、state snapshot、Python `with` 资源管理。<br>- 后续依赖：LC-11 将继续区分短期 thread state 与长期 store；后续长对话需要结合 trim、delete 或 summarization 控制 messages 成本。 |
 
 ## 10. 完成标准
 
@@ -215,3 +215,4 @@ uv sync
 | 2026-06-17 11:37 | 细化实践骨架规则：关键 TODO 附近可提供注释掉的核心代码片段，供学习者参考后手写。 | 执行说明 |
 | 2026-06-17 12:36 | 补充实践代码结构规则：避免函数拆分过细，连贯流程可适度聚合。 | 执行说明 |
 | 2026-06-17 12:43 | 细化实践代码结构规则：连贯流程可放在一起，但需用注释或代码段分块区分。 | 执行说明 |
+| 2026-06-17 16:26 | 删除实践代码函数拆分粒度的硬性规则，后续阶段骨架按具体学习任务灵活组织。 | 执行说明 |
