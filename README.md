@@ -10,6 +10,26 @@
 - `AGENTS.md`：Codex 协作约束，主要约定代码注释和 Git 提交信息尽量使用中文。
 - `deep-research-report.md`：学习计划形成前的资料调研与设计依据。
 
+## 学习阶段
+
+`learning/` 按知识点拆分为递进阶段。每个 LangChain 阶段通常包含中文学习笔记、手写练习骨架和初始骨架副本。
+
+| 阶段 | 主题 | 学习重点 | 学习笔记 |
+| --- | --- | --- | --- |
+| PY-01 | venv / uv | Python 虚拟环境、`uv` 项目与依赖管理 | [venv_uv.md](learning/PY_01_venv_uv/venv_uv.md) |
+| LC-01 | 版本边界 | 确认 LangChain v1 的版本范围、包职责与官方资料入口 | [version_boundary.md](learning/LC_01_version_boundary/version_boundary.md) |
+| LC-02 | 最小 Agent | 使用 `create_agent` 构建并运行最小可用 agent | [minimal_agent.md](learning/LC_02_minimal_agent/minimal_agent.md) |
+| LC-03 | Models | 模型初始化、参数配置、调用方式与 provider 接入 | [models.md](learning/LC_03_models/models.md) |
+| LC-04 | Messages | 消息类型、消息内容、对话历史与消息流转 | [messages.md](learning/LC_04_messages/messages.md) |
+| LC-05 | Tools | 工具定义、参数 schema、tool calling 与执行结果回传 | [tools.md](learning/LC_05_tools/tools.md) |
+| LC-06 | Structured Output | 使用 schema 约束模型输出并获得结构化结果 | [structured_output.md](learning/LC_06_structured_output/structured_output.md) |
+| LC-07 | Runtime | 运行时上下文、依赖注入以及 tool 中的上下文访问 | [runtime.md](learning/LC_07_runtime/runtime.md) |
+| LC-08 | Middleware | agent 中间件、生命周期钩子与行为扩展 | [middleware.md](learning/LC_08_middleware/middleware.md) |
+| LC-09 | 上下文工程 | 根据任务选择、组织和控制进入模型的上下文 | [context_engineering.md](learning/LC_09_context_engineering/context_engineering.md) |
+| LC-10 | Short-term Memory | 基于 thread 与 checkpointer 管理单次会话记忆 | [short_term_memory.md](learning/LC_10_short_term_memory/short_term_memory.md) |
+| LC-11 | Long-term Memory | 跨会话持久化、命名空间与长期记忆读写 | [long_term_memory.md](learning/LC_11_long_term_memory/long_term_memory.md) |
+| LC-12 | Retrieval 基础 | Document、文本切分、embedding、vector store 与 retriever | [retrieval_basics.md](learning/LC_12_retrieval_basics/retrieval_basics.md) |
+
 ## 当前基线
 
 - Python：`>=3.11`
