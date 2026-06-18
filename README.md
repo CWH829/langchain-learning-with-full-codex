@@ -10,6 +10,42 @@
 - `AGENTS.md`：Codex 协作约束，主要约定代码注释和 Git 提交信息尽量使用中文。
 - `deep-research-report.md`：学习计划形成前的资料调研与设计依据。
 
+## 目录结构
+
+```text
+.
+├── .agents/                              
+│   ├── LANGCHAIN_PLAN.md                 # 核心文件：学习计划文档
+│   ├── STAGE_SUMMARIES.md                # 已完成阶段的轻量摘要
+│   └── CHANGE_LOG.md                     # 学习计划变更记录
+├── learning/                             
+│   ├── PY_01_venv_uv/                    # Python 虚拟环境与 uv
+│   ├── LC_01_version_boundary/           # LangChain v1 版本边界
+│   ├── LC_02_minimal_agent/              # 最小 agent 学习笔记
+│   ├── LC_03_models/                     # Models
+│   ├── LC_04_messages/                   # Messages
+│   ├── LC_05_tools/                      # Tools
+│   ├── LC_06_structured_output/          # Structured Output
+│   ├── LC_07_runtime/                    # Runtime
+│   ├── LC_08_middleware/                 # Middleware
+│   ├── LC_09_context_engineering/        # 上下文工程
+│   ├── LC_10_short_term_memory/          # 短期记忆
+│   ├── LC_11_long_term_memory/           # 长期记忆
+│   ├── LC_12_retrieval_basics/           # Retrieval 基础
+│   ├── .....                             # 更多阶段待开发
+├── src/
+│   └── langchain_study/                  # 可复用的正式项目代码
+├── tests/
+│   └── test_project_import.py            
+├── .env                                  # 本地环境变量，不提交真实密钥
+├── .gitignore                            
+├── AGENTS.md                             # Codex 约束
+├── deep-research-report.md               # 学习计划的前期资料调研
+├── pyproject.toml                        
+├── uv.lock                               
+└── README.md                                                           
+```
+
 ## 学习阶段
 
 `learning/` 按知识点拆分为递进阶段。每个 LangChain 阶段通常包含中文学习笔记、手写练习骨架和初始骨架副本。
@@ -75,28 +111,6 @@ codex mcp add langchain-docs --url https://docs.langchain.com/mcp
 ```
 
 模型 provider、API key、LangSmith key 等本地配置按当前学习任务补充到 `.env` 或系统环境变量中。不要把真实密钥提交到 Git。
-
-## 目录结构
-
-```text
-.
-├── AGENTS.md                    # Codex 协作约束
-├── .agents/
-│   ├── LANGCHAIN_PLAN.md        # LangChain 学习路线和进度记录
-│   ├── STAGE_SUMMARIES.md       # 阶段摘要
-│   └── CHANGE_LOG.md             # 计划变更记录
-├── deep-research-report.md      # 学习计划形成前的资料调研
-├── learning/                    # 阶段学习材料（包括代码、知识点文档、笔记等）
-│   ├── LC_01_version_boundary/  # LC-01：版本边界
-│   ├── LC_02_minimal_agent/     # LC-02：最小 agent
-│   └── .....
-├── src/
-│   └── langchain_study/         # 后续可复用的正式项目代码
-├── tests/                      
-└── pyproject.toml               
-```
-
-学习材料按阶段放在 `learning/` 下。每个阶段目录按实际需要收纳代码、笔记、排障记录或数据样例，不强制固定文件模板。
 
 ## 学习推进
 
