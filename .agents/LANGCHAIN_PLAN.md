@@ -103,7 +103,7 @@
 | ✅ | LC-10 | Short-term Memory | thread-scoped memory、checkpointer | 实现线程内记忆 | 多轮对话保留上下文 | `with`、资源管理 | 2026-06-17 14:28 | 2026-06-17 16:35 | R6 | 学习者已完成 short-term memory 实践，理解 `InMemorySaver`、`checkpointer`、`thread_id`、同线程多轮 messages 追加、不同线程状态隔离，以及 `agent.get_state(config)` 查看 checkpoint state。 |
 | ✅ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | 存取用户偏好示例 | 数据结构、序列化 | 2026-06-17 16:59 | 2026-06-17 21:43 | R6 | 学习者已完成长期记忆实践，理解 `InMemoryStore`、`namespace`、`key`、`runtime.store`、`runtime.context.user_id`，并观察了同一用户跨 thread 读取偏好与不同用户隔离。 |
 | ✅ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | 文本切分 + 向量检索 | 文件读写、列表处理 | 2026-06-17 21:56 | 2026-06-19 11:55 | R6 | 已完成 Retrieval 基础实践；4 个原始 Document 切为 6 个 chunk，确认 metadata 与 `start_index` 保留、180 字符上限、两种检索入口结果一致，并识别关键词 embedding 的零分并列噪声和 NumPy 依赖。 |
-| ⬜ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 |  |  | R6,R11 |  |
+| 🟡 | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 | 2026-06-19 12:03 |  | R6,R11 | 已创建学习文档与手写骨架；实践将串联 retrieve、context formatting、单次 model generation，并对比已知问题与未知问题。 |
 | ⬜ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | 给 agent 增加检索工具 | 控制流、结果校验 |  |  | R6,R11 |  |
 | ⬜ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | 让 agent 调用 MCP server | async/await、客户端生命周期 |  |  | R1,R2,R6 |  |
 | ⬜ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | 记录一次完整 agent trace | 环境变量、SDK 配置 |  |  | R7 |  |
