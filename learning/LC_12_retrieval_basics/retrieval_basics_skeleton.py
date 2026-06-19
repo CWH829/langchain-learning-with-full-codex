@@ -14,7 +14,7 @@
 from __future__ import annotations
 
 import math
-from collections import Counter
+from collections import Counter # 统计词频
 
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
@@ -56,7 +56,7 @@ class KeywordEmbeddings(Embeddings):
         return self._embed(text)
 
     def _embed(self, text: str) -> list[float]:
-        words = Counter(text.lower().replace("-", " ").split()) # - 以及 空格，分隔
+        words = Counter(text.lower().replace("-", " ").split()) # - 以及 空格，分隔，统计词频
         vector = [float(words.get(word, 0)) for word in self.vocabulary] # text对应词汇表中的词频 作为向量
         length = math.sqrt(sum(value * value for value in vector)) # 向量长度。Σ sigma 求和。
         if length == 0:
