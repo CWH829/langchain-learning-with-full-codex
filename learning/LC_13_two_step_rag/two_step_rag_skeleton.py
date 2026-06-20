@@ -83,6 +83,11 @@ def build_chat_model():
         temperature=0,
         timeout=30,
         max_retries=5,
+        extra_body={
+            "thinking": {
+                "type": "disabled",
+            }
+        }
     )
 
 
