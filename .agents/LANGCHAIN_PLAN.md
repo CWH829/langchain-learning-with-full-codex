@@ -22,7 +22,7 @@
 
 1. 先读本文件，找到“知识点总表”中第一条状态为 `⬜` 或 `🟡` 的任务。
 2. 开始新阶段学习时，必须先提醒学习者确认当前智能程度为“高”，等待学习者回复后再继续；学习结束后补充完善学习文档前，也需要同样提醒并等待确认。
-3. 学习每个知识点前，优先检索官方文档，确认 API、包名、导入路径未过时。
+3. 学习每个知识点前，优先检索官方文档，确认 API、包名、导入路径未过时。优先以官网文档为准，Context7 及其他来源仅作为检索索引和补充，不得替代官网检索。
 4. 每个知识点不强制套用固定模板，按实际内容灵活推进，通常包括：目标确认、官方核对、概念讲解、手写实践、实践后观察到的结论、排错记录、阶段总结和进度更新。
 5. 学习文档生成时应尽量完整、丰富，尽量覆盖该阶段知识点的关键细节和要点，不要有遗漏。
 6. 阶段学习文档可按需加入“图解”小节，用 Mermaid 绘制概念关系图、调用流程图、依赖图、生命周期图等；通常只覆盖当前阶段最关键的 1-2 个结构，避免为了画图而画图。
@@ -104,7 +104,7 @@
 | ✅ | LC-11 | Long-term Memory | store、跨会话记忆 | 区分短期/长期记忆 | 存取用户偏好示例 | 数据结构、序列化 | 2026-06-17 16:59 | 2026-06-17 21:43 | R6 | 学习者已完成长期记忆实践，理解 `InMemoryStore`、`namespace`、`key`、`runtime.store`、`runtime.context.user_id`，并观察了同一用户跨 thread 读取偏好与不同用户隔离。 |
 | ✅ | LC-12 | Retrieval 基础 | documents、splitters、embeddings、vector store | 能做语义检索 | 文本切分 + 向量检索 | 文件读写、列表处理 | 2026-06-17 21:56 | 2026-06-19 11:55 | R6 | 已完成 Retrieval 基础实践；4 个原始 Document 切为 6 个 chunk，确认 metadata 与 `start_index` 保留、180 字符上限、两种检索入口结果一致，并识别关键词 embedding 的零分并列噪声和 NumPy 依赖。 |
 | ✅ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 | 2026-06-19 12:03 | 2026-06-19 17:51 | R6,R11 | 已完成 retrieve、context formatting、单次 model generation 与 sources 回传；已验证两个已知问题和一个未知问题，并记录教学 embedding 全零向量导致 cosine similarity NaN 的排错过程。 |
-| ⬜ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | 给 agent 增加检索工具 | 控制流、结果校验 |  |  | R6,R11 |  |
+| 🟡 | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | 给 agent 增加检索工具 | 控制流、结果校验 | 2026-06-19 18:30 |  | R6,R11 | 已启动；将对比 agent 自主调用检索工具与显式 query rewrite / retrieval validation 两种控制方式。 |
 | ⬜ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | 让 agent 调用 MCP server | async/await、客户端生命周期 |  |  | R1,R2,R6 |  |
 | ⬜ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | 记录一次完整 agent trace | 环境变量、SDK 配置 |  |  | R7 |  |
 | ⬜ | LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 |  |  | R8 |  |
