@@ -16,9 +16,7 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 
-
 mcp = FastMCP("langchain-study")
-
 
 STUDY_NOTES: list[dict[str, str]] = [
     {
@@ -52,27 +50,33 @@ STUDY_NOTES: list[dict[str, str]] = [
 @mcp.tool()
 def search_study_notes(query: str) -> dict[str, Any]:
     """按关键词搜索 LangChain 学习资料，返回匹配的阶段、主题和摘要。"""
-    # TODO 1：对 query 做 strip() 和 lower()。
-    # TODO 2：遍历 STUDY_NOTES，把 stage_id、topic、summary 合并后做不区分大小写匹配。
-    # TODO 3：返回 {"query": 原始查询, "matches": 匹配列表}。
+    # 1：对 query 做 strip() 和 lower()。
+    # 2：遍历 STUDY_NOTES，把 stage_id、topic、summary 合并后做不区分大小写匹配。
+    # 3：返回 {"query": 原始查询, "matches": 匹配列表}。
     #
     # 可参考的核心写法（请理解后手写）：
-    # normalized_query = query.strip().lower()
-    # matches = [
-    #     note
-    #     for note in STUDY_NOTES
-    #     if normalized_query in " ".join(note.values()).lower()
-    # ]
-    return {"query": query, "matches": []}
+    normalized_query = query.strip().lower()
+    if not normalized_query:
+        return {"query": query, "matches": []}
+    matches = [
+        note
+        for note in STUDY_NOTES
+        if normalized_query in " ".join(note.values()).lower()
+    ]
+    return {"query": query, "matches": matches}
 
 
 @mcp.tool()
 def get_stage_summary(stage_id: str) -> dict[str, Any]:
     """按 LC 阶段 ID 获取一条学习摘要，例如 LC-14。"""
-    # TODO 1：统一 stage_id 的空格与大小写。
-    # TODO 2：找到对应 note 后，返回 {"found": True, "note": note}。
-    # TODO 3：没有找到时返回 {"found": False, "stage_id": 标准化 ID}。
-    return {"found": False, "stage_id": stage_id}
+    # 1：统一 stage_id 的空格与大小写。
+    # 2：找到对应 note 后，返回 {"found": True, "note": note}。
+    # 3：没有找到时返回 {"found": False, "stage_id": 标准化 ID}。
+    normalized_stage_id = stage_id.strip().upper()
+    for note in STUDY_NOTES:
+        if note["stage_id"] == normalized_stage_id:
+            return {"found": True, "note": note}
+    return {"found": False, "stage_id": normalized_stage_id}
 
 
 def main() -> None:

@@ -123,8 +123,8 @@ transport 决定 client 与 server 如何**通信**。
 
 本阶段使用 `stdio`：
 
-- client 启动本地 server 子进程；
-- 双方通过标准输入和标准输出传输 MCP 消息；
+- client 启动本地 server 子进程；不需要端口或 HTTP 服务
+- 双方通过标准输入（std in）和标准输出（std out）传输 MCP 消息；
 - 适合本地工具和最小学习示例；
 - server 不应随意向 stdout 打印调试文本，以免污染协议消息。
 
@@ -148,6 +148,78 @@ MCP server 描述工具的名称、说明和输入 schema。adapter 读取这些
 - docstring 是否能说明何时调用；
 - 参数名与类型是否明确；
 - 返回结果是否足够可靠。
+
+### 5.1 构造 `MultiServerMCPClient`
+
+`build_mcp_client()` 是本仓库为了拆分职责而定义的普通封装函数，不是 LangChain 官方 API；它内部使用的 `MultiServerMCPClient(...)` 才是本阶段关键 API。
+
+本地 `stdio` server 的完整客户端配置如下：
+
+```python
+import sys
+from pathlib import Path
+
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+
+SERVER_PATH = Path(__file__).with_name("study_mcp_server_skeleton.py").resolve()
+
+
+def build_mcp_client() -> MultiServerMCPClient:
+    return MultiServerMCPClient(
+        {
+            "study": {
+                "transport": "stdio",
+                "command": sys.executable,
+                "args": [str(SERVER_PATH)],
+            }
+        }
+    )
+```
+
+配置字段含义：
+
+| 字段 | 含义 |
+| --- | --- |
+| `"study"` | 当前 MCP server 在 client 配置中的名称，后续可用于选择 session 或区分多个 server |
+| `"transport": "stdio"` | 使用子进程的标准输入和标准输出传输 MCP 消息 |
+| `"command": sys.executable` | 使用运行当前 client 的同一个 Python 解释器，避免 server 脱离当前虚拟环境 |
+| `"args": [str(SERVER_PATH)]` | 传给 Python 解释器的命令行参数，即需要启动的 MCP server 文件 |
+
+client 创建 server 子进程的效果近似于：
+
+```powershell
+当前虚拟环境的Python.exe study_mcp_server_skeleton.py
+```
+
+完整调用关系是：
+
+```text
+build_mcp_client()
+  -> MultiServerMCPClient(connection_config)
+  -> await client.get_tools()
+  -> client 启动 server 子进程
+  -> 建立并初始化 MCP session
+  -> 读取 MCP tool definitions
+  -> 转换为 LangChain tools
+```
+
+这里使用 `sys.executable`，而不直接写 `"python"`，是为了确保 client 与 server 使用同一个虚拟环境及其中安装的依赖。
+
+### 5.2 加载 MCP tools
+
+构造 client 本身不会立即得到工具；需要在异步函数中调用：
+
+```python
+client = build_mcp_client()
+tools = await client.get_tools()
+```
+
+`get_tools()` 会连接配置中的 MCP server、读取其工具定义，并返回可直接交给 agent 的 LangChain tools：
+
+```python
+agent = create_agent(model=model, tools=tools)
+```
 
 ## 6. 为什么本阶段使用 async/await
 
@@ -288,12 +360,170 @@ server 暴露工具
 
 ## 12. 实践记录
 
-待学习者完成代码后补充。
+### 12.1 本地 MCP server
+
+学习者完成了两个 MCP tools：
+
+- `search_study_notes(query)`：对 query 做标准化后执行不区分大小写的完整子字符串匹配；空查询直接返回空列表，避免空字符串命中全部资料。
+- `get_stage_summary(stage_id)`：统一去除首尾空格并转为大写，按阶段 ID 精确查询；未找到时返回标准化 ID。
+
+server 使用：
+
+```python
+mcp.run(transport="stdio")
+```
+
+运行时由 client 启动为独立子进程，通过 stdin/stdout 传输 MCP 协议消息。server 没有向 stdout 写入普通调试输出。
+
+### 12.2 MCP client 与异步调用
+
+学习者使用 `MultiServerMCPClient` 配置本地 server：
+
+```python
+{
+    "study": {
+        "transport": "stdio",
+        "command": sys.executable,
+        "args": [str(SERVER_PATH)],
+    }
+}
+```
+
+其中 `sys.executable` 确保 server 使用当前虚拟环境的 Python。随后完成：
+
+```python
+tools = await client.get_tools()
+agent = create_agent(model, tools, system_prompt=...)
+result = await agent.ainvoke({"messages": [...]})
+```
+
+同步入口通过 `asyncio.run(run_demo())` 启动事件循环。
+
+### 12.3 工具发现与 agent 调用
+
+`client.get_tools()` 成功发现并转换：
+
+- `search_study_notes`
+- `get_stage_summary`
+
+agent 首先调用 `search_study_notes`，query 为 `LC-14 RAG 路径`。由于当前实现采用完整子字符串匹配，而资料中没有连续出现这段完整文本，因此工具正常执行但返回：
+
+```python
+{"query": "LC-14 RAG 路径", "matches": []}
+```
+
+此时 `ToolMessage.status == "success"`，说明工具执行成功；`matches=[]` 只是业务上的未命中。随后 agent 改用 `get_stage_summary(stage_id="LC-14")` 并成功获得资料，体现了首次检索未命中后更换工具的 agent 行为。
+
+### 12.4 content、artifact 与 structured content
+
+工具返回的 Python dict 经各层转换：
+
+```text
+Python dict
+-> MCP CallToolResult.structuredContent
+-> adapter artifact["structured_content"]
+-> ToolMessage.artifact
+```
+
+实际观察到：
+
+```python
+{
+    "structured_content": {
+        "found": True,
+        "note": {
+            "stage_id": "LC-14",
+            "topic": "Agentic / Hybrid RAG",
+            "summary": "...",
+        },
+    }
+}
+```
+
+其中：
+
+- `structuredContent` 是 MCP `CallToolResult` 的协议字段；
+- `structured_content` 是 `langchain-mcp-adapters` 的 `MCPToolArtifact` 包装键；
+- `found`、`note` 等内层字段来自 MCP tool 自身的返回值。
+
+最终回答的核心区别来自命中的工具摘要；模型还对适用场景做了合理扩写。本阶段目标是验证 MCP 工具链路和消息转换，并不要求像 grounded RAG 一样严格限制回答只能逐字来自工具资料。
 
 ## 13. 排错记录
 
-待实践后补充。
+### 13.1 agent 输入不能直接传字符串
+
+错误写法：
+
+```python
+await agent.ainvoke("问题")
+```
+
+`create_agent(...)` 返回的是 graph，需要传入包含 `messages` 的状态字典：
+
+```python
+await agent.ainvoke(
+    {
+        "messages": [
+            {"role": "user", "content": "问题"},
+        ]
+    }
+)
+```
+
+否则可能出现 `InvalidUpdateError: Expected dict`。
+
+### 13.2 完整子字符串匹配导致组合 query 未命中
+
+`search_study_notes` 判断整个标准化 query 是否连续存在于资料文本中：
+
+```python
+normalized_query in " ".join(note.values()).lower()
+```
+
+因此资料分别含有 `LC-14`、`RAG` 和相关描述，并不代表组合 query `LC-14 RAG 路径` 能命中。这是当前教学搜索算法的预期限制，不是 MCP 调用失败。
+
+### 13.3 transport/session 错误与业务结果不同
+
+临时写错 server 路径时，Python 子进程无法启动目标文件，stdio 连接随子进程退出而关闭。错误发生在 `await client.get_tools()` 的连接或 session 初始化阶段：
+
+- client 直接抛出异常；
+- agent 尚未完成工具加载；
+- 不会产生 `ToolMessage`。
+
+这与正常返回 `matches=[]` 不同，后者仍是 `ToolMessage(status="success")`。
+
+### 13.4 MCP tool 主动失败
+
+让 MCP tool 主动抛出异常后，FastMCP 将其表示为 `CallToolResult(isError=True)`；当前 `langchain-mcp-adapters==0.3.0` 默认把该执行错误交回 agent：
+
+```text
+ToolMessage.status == "error"
+```
+
+agent 可以读取错误后继续回答或自我修正。transport/session 错误不属于该范围，仍会直接抛出。
 
 ## 14. 阶段总结
 
-待实践后补充。
+本阶段完成了本地 MCP 最小闭环：
+
+```text
+FastMCP server
+-> stdio transport
+-> MultiServerMCPClient
+-> LangChain tools
+-> create_agent
+-> AIMessage / ToolMessage
+```
+
+核心结论：
+
+1. MCP server 是独立进程，client 与 server 不共享 Python 内存，只通过协议交换可序列化数据。
+2. `stdio` 由 client 启动 server 子进程，并使用 server 的 stdin/stdout 通信；stdout 不应混入普通打印。
+3. `MultiServerMCPClient` 负责连接 server、发现 MCP tools 并转换为 LangChain tools。
+4. MCP I/O 使用异步 API，核心入口是 `await client.get_tools()`、`await agent.ainvoke(...)` 和 `asyncio.run(...)`。
+5. 默认 client 调用采用无状态 session；显式持久 session 与 LangGraph `thread_id` 是不同层次的生命周期概念。
+6. `ToolMessage.content` 面向消息流和模型，`artifact["structured_content"]` 保留 MCP structured content。
+7. 未命中是成功的业务结果，tool 执行异常可变为 `status="error"`，transport/session 失败则直接抛出异常。
+
+后续 LC-16 LangSmith Tracing 将观察一次 agent 运行中的模型调用、MCP tool call 和消息链路。
+

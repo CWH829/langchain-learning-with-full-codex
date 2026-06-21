@@ -24,26 +24,25 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from learning.LC_13_two_step_rag.two_step_rag_skeleton import build_chat_model
 
-
 SERVER_PATH = Path(__file__).with_name("study_mcp_server_skeleton.py").resolve()
 
 
 def build_mcp_client() -> MultiServerMCPClient:
     """构造连接本地学习资料 server 的 MCP client。"""
-    # TODO 1：构造 MultiServerMCPClient。
-    # TODO 2：server 名称使用 "study"。
-    # TODO 3：transport 使用 "stdio"。
-    # TODO 4：command 使用 sys.executable，args 传入 SERVER_PATH 字符串。
+    # 1：构造 MultiServerMCPClient。
+    # 2：server 名称使用 "study"。
+    # 3：transport 使用 "stdio"。
+    # 4：command 使用 sys.executable，args 传入 SERVER_PATH 字符串。
     #
-    # 可参考的连接配置（请理解后手写）：
-    # {
-    #     "study": {
-    #         "transport": "stdio",
-    #         "command": sys.executable,
-    #         "args": [str(SERVER_PATH)],
-    #     }
-    # }
-    raise NotImplementedError("请补全 build_mcp_client()")
+    return MultiServerMCPClient(
+        {
+            "study": {
+                "transport": "stdio",
+                "command": sys.executable,
+                "args": [str(SERVER_PATH)],
+            }
+        }
+    )
 
 
 def print_tools(tools: list[Any]) -> None:
@@ -77,26 +76,45 @@ async def run_demo() -> None:
     """加载 MCP tools，构造 agent，并完成一次异步问答。"""
     client = build_mcp_client()
 
-    # TODO 1：使用 await client.get_tools() 加载 tools。
-    # TODO 2：调用 print_tools(tools)。
-    # TODO 3：创建 chat model。
-    # TODO 4：使用 create_agent(model, tools, system_prompt=...) 创建 agent。
-    # TODO 5：使用 await agent.ainvoke(...) 提问。
-    # TODO 6：把 result["messages"] 交给 print_message_flow(...)。
+    # 1：使用 await client.get_tools() 加载 tools。
+    # 2：调用 print_tools(tools)。
+    # 3：创建 chat model。
+    # 4：使用 create_agent(model, tools, system_prompt=...) 创建 agent。
+    # 5：使用 await agent.ainvoke(...) 提问。
+    # 6：把 result["messages"] 交给 print_message_flow(...)。
     #
     # 建议问题：
     # "请查询学习资料，说明 LC-14 的两种 RAG 路径有什么区别。"
     #
     # 注意：
     # - get_tools() 和 ainvoke() 都是异步调用，需要 await。
-    # - system prompt 应明确要求先调用学习资料工具，不要凭模型记忆回答。
-    raise NotImplementedError("请补全 run_demo()")
+    # - system prompt 应明确要求阶段事实优先调用学习资料工具。
+    tools = await client.get_tools()
+    print_tools(tools)
+    model = build_chat_model()
+    agent = create_agent(
+        model,
+        tools,
+        system_prompt="你是 LangChain 学习助手。需要阶段事实时先使用工具，回答保持简洁。",
+    )
+
+    result = await agent.ainvoke(
+        {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": "请查询学习资料，说明 LC-14 的两种 RAG 路径有什么区别。",
+                }
+            ]
+        }
+    )
+    print_message_flow(result["messages"])
 
 
 def main() -> None:
     """从同步脚本入口启动异步事件循环。"""
-    # TODO：使用 asyncio.run(...) 执行 run_demo()。
-    raise NotImplementedError("请补全 main()")
+    # 使用 asyncio.run(...) 执行 run_demo()。
+    asyncio.run(run_demo())  # 执行异步任务
 
 
 if __name__ == "__main__":
