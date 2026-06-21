@@ -172,7 +172,7 @@ sequenceDiagram
 
 ## 6. RunnableConfig 中的观察信息
 
-`Runnable` 是 LangChain 对“可执行组件”的统一抽象。只要一个组件能够接收输入并产生输出，就可以按 Runnable 的方式调用。如Chat Model、Prompt Template、Output Parser、Retriever、组合起来的 Chain、`create_agent()` 返回的 agent graph
+`Runnable` 是 LangChain **对“可执行组件”的统一抽象**。只要一个组件能够接收输入并产生输出，就可以按 Runnable 的方式调用。如Chat Model、Prompt Template、Output Parser、Retriever、组合起来的 Chain、`create_agent()` 返回的 agent graph
 
 调用 agent 时可以传入配置：
 
@@ -267,6 +267,16 @@ learning/LC_16_langsmith_tracing/langsmith_tracing_skeleton.py
 请查询阶段笔记，说明 LC-15 学习了什么。必须先调用工具。
 ```
 
+运行后查看 UI：
+
+1. 打开 <https://smith.langchain.com/> 并登录创建 API Key 的账号。
+2. 在左侧进入 **Tracing Projects**（部分界面显示为 **Projects**）。
+3. 打开 `.env` 中 `LANGSMITH_PROJECT` 指定的 project；本阶段使用 `langchain-learning-lc16`。
+4. 在 traces 列表中找到 `run_name` 对应的 `lc16-agent-trace`。
+5. 点击 trace，展开并观察 `agent -> model -> tool -> model` 调用树。
+
+如果 trace 没有立即出现，应先检查环境变量和终端中的认证、网络错误，再调用 `wait_for_all_tracers()` 并刷新页面。
+
 ### 任务 C：使用 `@traceable` 手动埋点
 
 1. 给 `load_study_context()` 添加 `@traceable`。
@@ -294,7 +304,7 @@ wait_for_all_tracers()
 
 完成代码后，至少记录：
 
-1. agent 根 run 的名称、输入和输出。
+1. agent 根 run 的名称、输入和输出。 ——**LangGraph**
 2. 第一次 model run 是否产生 `tool_calls`。
 3. tool run 的输入、输出和耗时。
 4. 第二次 model run 如何使用工具结果。
@@ -364,14 +374,37 @@ trace 可能包含：
 
 ## 13. 实践记录
 
-完成手写实践后补充：
+### 13.1 自动 agent tracing
 
-- 实际使用的 project 名称
-- agent trace 的 run tree
-- `@traceable` 的父子 run 结构
-- tags / metadata 的继承观察
-- 遇到的问题及解决过程
+- 使用 project `langchain-learning-lc16` 成功接收本地 traces。
+- `run_name="lc16-agent-trace"` 成为 UI 中可识别的根 trace 名称。
+- 完成 `agent -> model -> lookup_stage_note -> model` 调用链观察：第一次 model run 产生工具调用，tool run 查询 LC-15 笔记，第二次 model run 根据工具结果生成最终回答。
+- 自定义 `lc-16`、`automatic-tracing` tags 和 `stage`、`practice`、`environment` metadata 能在 Attributes 中查看。
+- UI 还显示 `seq:step:N`、`graph:step:N` 等框架自动标签：
+  - `seq:step:N` 表示 `RunnableSequence` 内部的第 N 个步骤。
+  - `graph:step:N` 表示 LangGraph 的第 N 个图调度轮次。
+  - 这些编号属于框架内部执行信息，不应作为稳定的业务标识。
+
+### 13.2 `@traceable` 手动埋点
+
+- `answer-with-manual-trace` 成为外层父 run，输入中能看到 `question` 和 `stage_id`，输出中能看到函数返回的回答。
+- `load-study-context` 作为 `retriever` 类型的 child run，记录普通 Python 资料加载步骤。
+- `ChatOpenAI` model run 自动成为同一外层 run 的另一个 child，证明 `@traceable` 可以把普通 Python pipeline 与 LangChain 组件组织到同一棵 run tree。
+- UI 中成功显示 `lc-16`、`manual-tracing` tags，以及 `stage=LC-16`、`step=answer/load-context` metadata。
+- 实际观察到外层手动 trace 总耗时约 2.35 秒，model run 约 1.33 秒；本地资料加载接近 0 秒。该结果直观展示了各步骤对总耗时的贡献。
+
+### 13.3 关键理解
+
+- `Runnable` 是可执行组件；`Run` 是它某一次实际执行留下的观察记录。
+- Chat model 可直接接收消息列表；agent 接收的是包含 `messages` 的 graph state。
+- `RunnableConfig` 顶层的 `run_name`、`tags`、`metadata`、`configurable` 等 key 由框架约定；tags 和 metadata 的具体内容由业务定义。
+- LC-08 已通过 `configurable.thread_id` 使用过 `RunnableConfig`；LC-16 进一步用它补充 tracing 属性。
+- 自动 tracing 适合 LangChain/LangGraph 组件，`@traceable` 适合补充普通 Python 业务边界。两者可以在同一 trace 中组合使用。
 
 ## 14. 阶段总结
 
-完成实践后补充本阶段最终总结。
+本阶段完成了 LangSmith 自动 tracing 和 `@traceable` 手动埋点两条实践路径。通过环境变量开启 tracing 后，LangChain agent 无需逐个组件手动埋点，即可在 LangSmith UI 中查看 model、tool 和 agent 的父子 runs、输入输出、耗时、tags 与 metadata。
+
+手动埋点实践进一步把普通 Python 资料加载函数和问答 pipeline 纳入调用树，并观察到 `answer-with-manual-trace -> load-study-context / ChatOpenAI` 的父子结构。由此明确：trace 表示一次端到端请求，run 表示其中一次具体执行，LangSmith 的 run 可近似对应通用分布式追踪中的 span。
+
+Tracing 负责回答“程序实际怎样执行”，但不判断回答质量好坏。下一阶段 LC-17 将在这些可观察 runs 的基础上学习 dataset、evaluator 和 experiment，进入离线 Evaluation。

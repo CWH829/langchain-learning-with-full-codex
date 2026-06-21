@@ -20,6 +20,7 @@ from typing import Any
 
 from langchain.agents import create_agent
 from langchain.messages import AIMessage, ToolMessage
+from langchain_core.messages import HumanMessage
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from learning.LC_13_two_step_rag.two_step_rag_skeleton import build_chat_model
@@ -101,10 +102,11 @@ async def run_demo() -> None:
     result = await agent.ainvoke(
         {
             "messages": [
-                {
-                    "role": "user",
-                    "content": "请查询学习资料，说明 LC-14 的两种 RAG 路径有什么区别。",
-                }
+                HumanMessage(content="请查询学习资料，说明 LC-14 的两种 RAG 路径有什么区别。")
+                # {
+                #     "role": "user",
+                #     "content": "请查询学习资料，说明 LC-14 的两种 RAG 路径有什么区别。",
+                # }
             ]
         }
     )
