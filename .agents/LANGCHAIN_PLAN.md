@@ -106,7 +106,7 @@
 | ✅ | LC-13 | 2-step RAG | retrieve -> generate | 做最小知识问答 | 本地文本问答 | pipeline 思维 | 2026-06-19 12:03 | 2026-06-19 17:51 | R6,R11 | 已完成 retrieve、context formatting、单次 model generation 与 sources 回传；已验证两个已知问题和一个未知问题，并记录教学 embedding 全零向量导致 cosine similarity NaN 的排错过程。 |
 | ✅ | LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、validation | 知道何时升级 RAG | 给 agent 增加检索工具 | 控制流、结果校验 | 2026-06-19 18:30 | 2026-06-20 20:44 | R6,R11 | 已完成 Agentic 与 Hybrid RAG 实践；观察 agent 首次中文 query 零命中后自主二次检索，完成 `content_and_artifact` 来源保留、query rewrite、score threshold、semantic grader 和未知问题提前拒答；记录 DeepSeek structured output 需使用 `function_calling`。 |
 | ✅ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | 让 agent 调用 MCP server | async/await、客户端生命周期 | 2026-06-21 11:05 | 2026-06-21 16:12 | R1,R2,R6 | 已完成本地 FastMCP stdio server、MultiServerMCPClient、异步 agent 调用和消息流观察；确认 structured content 到 artifact 的转换，并区分业务未命中、tool 执行错误与 transport/session 错误。 |
-| ⬜ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | 记录一次完整 agent trace | 环境变量、SDK 配置 |  |  | R7 |  |
+| 🟡 | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | 记录完整 agent trace，并用 `@traceable` 手动埋点 | 环境变量、SDK 配置 | 2026-06-21 16:22 |  | R7 | 已创建自动 tracing + `@traceable` 手动埋点两层实践骨架；待学习者手动配置 LangSmith 并补全代码。 |
 | ⬜ | LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 |  |  | R8 |  |
 | ⬜ | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | Router 或简单 workflow | TypedDict、状态传递 |  |  | R9 |  |
 | ⬜ | LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 | 可选 subagent demo | 上下文隔离 |  |  | R6,R9 | 可选 |
