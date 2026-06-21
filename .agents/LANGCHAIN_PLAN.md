@@ -122,7 +122,7 @@
 | ✅ | PY-03 | Pydantic / dataclass | structured output | 会定义轻量数据模型 | 已在 LC-03 接触 dataclass 配置对象，在 LC-06 完成 Pydantic `BaseModel`、`Field(...)`、`Literal`、`ValidationError` 思路和 `model_dump()` 序列化基础。 |
 | ✅ | PY-04 | decorators | tool / middleware | 理解装饰器包装函数 | 已在 LC-08 中结合 `@tool`、middleware hook 和 Java AOP 类比，理解装饰器用于包装/注册函数，以及框架按约定调用被注册函数的基本思路。 |
 | ✅ | PY-05 | with | memory / client / file | 理解上下文管理器 | 已在 LC-10 中结合数据库型 checkpointer 场景理解 `with ... as ...` 的资源进入、退出和异常清理作用。 |
-| ⬜ | PY-06 | async/await | MCP / async invoke | 能读懂异步调用 | 关注事件循环、协程和异步资源生命周期 |
+| ✅ | PY-06 | async/await | MCP / async invoke | 能读懂异步调用 | 已在 LC-15 MCP 中完成 `async def`、`await client.get_tools()`、`await agent.ainvoke(...)` 和 `asyncio.run(...)` 实践，理解协程不会仅因调用而自动执行，需要由事件循环驱动，并关注异步客户端与资源生命周期。 |
 | ⬜ | PY-07 | list/dict comprehension | 数据处理 | 能读懂简洁表达式 | 不必一开始强记 |
 | ⬜ | PY-08 | pytest | eval / tests | 能写最小测试 | 后续项目化需要 |
 

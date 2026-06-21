@@ -32,7 +32,12 @@
 │   ├── LC_10_short_term_memory/          # 短期记忆
 │   ├── LC_11_long_term_memory/           # 长期记忆
 │   ├── LC_12_retrieval_basics/           # Retrieval 基础
-│   ├── .....                             # 更多阶段待开发
+│   ├── LC_13_two_step_rag/                # 2-step RAG
+│   ├── LC_14_agentic_hybrid_rag/          # Agentic / Hybrid RAG
+│   ├── LC_15_mcp/                         # MCP
+│   ├── LC_16_langsmith_tracing/           # LangSmith Tracing
+│   ├── LC_17_langsmith_evaluation/        # LangSmith Evaluation
+│   └── .....                              # 后续阶段待开发
 ├── src/
 │   └── langchain_study/                  # 可复用的正式项目代码
 ├── tests/
@@ -65,6 +70,12 @@
 | LC-10 | Short-term Memory | 基于 thread 与 checkpointer 管理单次会话记忆 | [short_term_memory.md](learning/LC_10_short_term_memory/short_term_memory.md) |
 | LC-11 | Long-term Memory | 跨会话持久化、命名空间与长期记忆读写 | [long_term_memory.md](learning/LC_11_long_term_memory/long_term_memory.md) |
 | LC-12 | Retrieval 基础 | Document、文本切分、embedding、vector store 与 retriever | [retrieval_basics.md](learning/LC_12_retrieval_basics/retrieval_basics.md) |
+| LC-13 | 2-step RAG | 固定执行 retrieve、context formatting 与单次 generation | [two_step_rag.md](learning/LC_13_two_step_rag/two_step_rag.md) |
+| LC-14 | Agentic / Hybrid RAG | agentic retrieval、query rewrite、结果校验与混合控制流 | [agentic_hybrid_rag.md](learning/LC_14_agentic_hybrid_rag/agentic_hybrid_rag.md) |
+| LC-15 | MCP | FastMCP、stdio、MCP client、异步工具加载与 agent 调用 | [mcp.md](learning/LC_15_mcp/mcp.md) |
+| LC-16 | LangSmith Tracing | 自动 tracing、手动埋点、run tree 与调用链观察 | [langsmith_tracing.md](learning/LC_16_langsmith_tracing/langsmith_tracing.md) |
+| LC-17 | LangSmith Evaluation | dataset、target function、evaluator 与 experiment | [langsmith_evaluation.md](learning/LC_17_langsmith_evaluation/langsmith_evaluation.md) |
+
 
 ## 当前基线
 
