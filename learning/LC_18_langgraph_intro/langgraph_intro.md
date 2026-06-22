@@ -79,6 +79,78 @@ flowchart LR
 
 `StateGraph(State)` 是构建器；`compile()` 后才得到可执行图。
 
+### 3.5 `graph.invoke()` 与 `agent.invoke()`
+
+`create_agent(...)` 返回的 agent 本身也是一个编译后的 LangGraph。普通 graph 和预构建 agent 都遵循 Runnable 调用形式：
+
+```python
+graph.invoke(input, config=None)
+agent.invoke(input, config=None)
+```
+
+两者不是使用不同的 `invoke()` 规则。真正的区别是：
+
+> 输入结构由图的 state schema 决定，返回值是图执行结束时的最终 state。
+
+#### 普通 Graph
+
+如果图使用：
+
+```python
+class LinearState(TypedDict):
+    raw_text: str
+    trace: Annotated[list[str], add]
+```
+
+调用时就传入这份 state 所需的字段：
+
+```python
+result = graph.invoke({
+    "raw_text": "  LangGraph  ",
+    "trace": [],
+})
+```
+
+返回值也是 `LinearState` 的最终快照，可能包含节点后来写入的`normalized_text`、`answer` 等字段。
+
+#### 预构建 Agent
+
+agent 通常使用以 `messages` 为核心的 state：
+
+```python
+result = agent.invoke({
+    "messages": [
+        {"role": "user", "content": "LC-18 学什么？"}
+    ]
+})
+```
+
+因此返回 state 中也主要通过 `messages` 保存 `HumanMessage`、`AIMessage` 和`ToolMessage`。如果创建 agent 时扩展了自定义 state schema，输入和返回值也**可以包含其他字段**。
+
+#### `input` 与 `config` 不要混淆
+
+`input` 是进入图的**业务 state**；`config` 是**本次运行的配置**，config 不属于业务 state。
+
+```python
+graph.invoke(
+    {"messages": [("user", "你好")]},
+    config={
+        "configurable": {"thread_id": "thread-1"},
+        "tags": ["lc-18"],
+    },
+)
+```
+
+- `messages` 会进入 state，并被节点读取或更新。
+- `thread_id` 可供 checkpointer 区分会话。
+- `tags` 可用于 tracing 和运行标记。（langsmith）
+- 后两者不会因为传入 `config` 就自动变成 state 字段。
+
+所以看到任何 `.invoke(...)` 时，先问两个问题：
+
+1. 这个 Runnable 背后的 state schema 是什么？
+2. 哪些值是**业务输入**，哪些值只是**运行配置**？
+
 ## 4. 状态更新与 Reducer
 
 默认情况下，节点返回的新字段值会**覆盖**旧值：
@@ -198,7 +270,7 @@ def call_model(state: MessagesState):
 1. 在 builder 上直接 `invoke()`：应先 `compile()`。
 2. 节点返回裸字符串或 `None`：普通节点应**返回 state** 更新字典。
 3. 总是返回完整 state：容易**误覆盖**其他更新，优先返回**局部字段**。
-4. 原地修改 state：会模糊输入快照与输出更新的边界。
+4. **原地修改** state：会模糊输入快照与输出更新的边界。
 5. 路由返回值与映射**键不一致**：可用 `Literal[...]` 降低拼写错误。
 6. ToolNode 后直接结束：模型无法**读取工具结果**并组织最终回答。
 7. messages 使用默认**覆盖**：优先使用 `MessagesState` 或 `add_messages`。
@@ -227,11 +299,20 @@ def call_model(state: MessagesState):
 
 ## 12. 学习过程记录
 
-实践完成后补充：
+- 实际运行输出：直线图最终得到 `raw_text`、`normalized_text`、`answer` 和累计后的 `trace`；Router 图的 question 与 summary 输入分别经过对应分支并在 `finalize` 汇合。
 
-- 实际运行输出：
-- state 更新观察：
-- Router 分支观察：
-- model/tool 消息链：
-- 遇到的问题与修复：
-- 最终总结：
+- state 更新观察：节点读取完整 state，但只返回自己负责的局部更新；普通字段默认覆盖，`trace: Annotated[list[str], add]` 按节点执行顺序累计。
+
+- Router 分支观察：`classify_request` 作为 node 更新 `intent` 并写入 trace；`route_request` 作为 routing function 只返回路由标识，不产生 state 更新；两个分支统一写入 `branch_result`，因此 `finalize` 无须判断结果来自哪个分支。
+
+- model/tool 消息链：普通问题为 `HumanMessage -> AIMessage`；需要工具时为 `HumanMessage -> AIMessage(tool_calls) -> ToolMessage -> AIMessage`。`call_model` 负责在 `ModelToolState` 与绑定工具后的模型之间适配输入输出，`ToolNode` 执行工具，`tools_condition` 决定进入工具节点或结束。
+
+- `invoke` 对照：普通 graph 与 `create_agent` 返回的 agent 都使用 Runnable 的 `invoke(input, config=None)` 形式，具体输入与最终返回结构由各自的 state schema 决定；`config` 是运行配置，不属于业务 state。
+
+- 遇到的问题与修复：曾误用 Python 3.14 `asyncio.print_call_graph` 打印 LangGraph state，因其要求 `asyncio.Future` 而报错，改为普通 `print()`；修正 Router demo 中 question/summary 变量名与输入对应关系；明确 `create_agent(model=model, tools=tools)` 在内部处理工具绑定，而手写图需要显式调用 `model.bind_tools(tools)`。
+
+- 验证结果：直线图与 Router 图通过本地实际调用和断言；model/tool 图使用不联网的假模型验证了直接回答路径与完整工具调用路径，自定义 `request_id` 也随最终 state 保留。
+
+  
+
+  最终总结：LangGraph 将应用表示为“state 保存快照、node 产生局部更新、edge 决定下一步”的图。预构建 agent 适合标准 model/tool 循环，自定义 `StateGraph` 则适合需要显式状态、分支、循环与业务控制的工作流。

@@ -30,10 +30,10 @@
 8. 实践任务较复杂时，可用 Mermaid 绘制补充代码结构图，放在“手写实践任务”小节中，作为补全 TODO 前的代码地图。
 9. 代码实践以学习者手写为主；Codex 给思路、片段、骨架和提示，尽量覆盖本阶段涉及的关键 API；关键 TODO 附近可提供注释掉的核心代码片段，便于学习者参考后手写；不直接生成完整实现，也不主动执行大量命令或测试验证，以节省时间和 token。
 10. 学习过程中遇到问题时，优先引导学习者自行解决，不主动替其执行。
-11. 学习内容以 LangChain、LangGraph 和 Python 为主，默认不强行套 Java 视角；如果概念确实适合类比，可在句末用括号简短补充。
+11. 学习内容默认不强行套 Java 视角；如果概念确实适合类比，可在句末用括号简短补充。
 12. 讲解或记录英文术语时可以保留原文；如果属于较高级或不直观的词汇，可在后面用中文括号补充翻译，辅助理解，例如：`transient（短暂的）`。
 13. 遇到 Python 特殊语法、特色功能或特性时，按实际需要在学习文档或代码注释中简单解释。
-14. 创建 Python 手写骨架文件时，可以同步创建一份 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
+14. 创建 Python 手写骨架文件时，可以同步创建一份相同的 origin 副本，用于保留最初始骨架，默认命名为 `<原文件名>.origin.py`。
 15. 学习完成后，先检查代码明显问题、可优化处和实践任务覆盖情况；再结合实践，更新学习文档，如知识细节、实践记录、排错记录和总结等；最后在 `.agents/STAGE_SUMMARIES.md` 中总结阶段摘要。
 16. 学习计划变化时，只修改必要内容，并在 `.agents/CHANGE_LOG.md` 中追加摘要；变更记录只记录计划本身的变更。
 
@@ -109,7 +109,7 @@
 | ✅ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | 让 agent 调用 MCP server | async/await、客户端生命周期 | 2026-06-21 11:05 | 2026-06-21 16:12 | R1,R2,R6 | 已完成本地 FastMCP stdio server、MultiServerMCPClient、异步 agent 调用和消息流观察；确认 structured content 到 artifact 的转换，并区分业务未命中、tool 执行错误与 transport/session 错误。 |
 | ✅ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | 记录完整 agent trace，并用 `@traceable` 手动埋点 | 环境变量、SDK 配置 | 2026-06-21 16:22 | 2026-06-21 18:36 | R7 | 已完成自动 agent tracing 与 `@traceable` 手动埋点；在 LangSmith UI 中观察 model/tool 调用链、普通函数与 model 的父子 runs，以及自定义和框架内部 tags、metadata、耗时与输入输出。 |
 | ✅ | LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 | 2026-06-21 18:47 | 2026-06-21 22:34 | R8 | 已完成 3 条样例的 RAG mini eval；两个确定性 evaluator 分别检查答案关键词和真实检索来源，3/3 runs 均完成且平均分均为 1.00；已记录批量创建 examples、位置参数 target 和 evaluator 类型提示等排错过程。 |
-| 🟡 | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | Router 或简单 workflow | TypedDict、状态传递 | 2026-06-22 10:59 |  | R9 | 按“纯 Python 直线图 -> Router 条件分支 -> model/tool 循环”递进学习。 |
+| ✅ | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | Router 或简单 workflow | TypedDict、状态传递 | 2026-06-22 10:59 | 2026-06-22 21:24 | R9 | 已完成纯 Python 直线图、Router 条件分支与汇合、model/tool 循环；掌握局部 state 更新、字段 reducer、`graph.invoke` 与 `agent.invoke` 的 state schema 差异、`MessagesState`、`ToolNode` 和 `tools_condition`。 |
 | ⬜ | LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 | 可选 subagent demo | 上下文隔离 |  |  | R6,R9 | 可选 |
 | ⬜ | LC-20 | 综合小项目 | agent + tools + RAG + MCP + tracing/eval | 完成可复盘项目 | 做一个个人知识库问答 agent | 项目组织、测试、提交 |  |  | R1-R9 |  |
 
