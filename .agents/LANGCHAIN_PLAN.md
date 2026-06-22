@@ -109,7 +109,7 @@
 | ✅ | LC-15 | MCP | MCP、`langchain-mcp-adapters`、docs MCP | 接入外部工具/文档 | 让 agent 调用 MCP server | async/await、客户端生命周期 | 2026-06-21 11:05 | 2026-06-21 16:12 | R1,R2,R6 | 已完成本地 FastMCP stdio server、MultiServerMCPClient、异步 agent 调用和消息流观察；确认 structured content 到 artifact 的转换，并区分业务未命中、tool 执行错误与 transport/session 错误。 |
 | ✅ | LC-16 | LangSmith Tracing | tracing、runs、observability | 能定位 agent 行为 | 记录完整 agent trace，并用 `@traceable` 手动埋点 | 环境变量、SDK 配置 | 2026-06-21 16:22 | 2026-06-21 18:36 | R7 | 已完成自动 agent tracing 与 `@traceable` 手动埋点；在 LangSmith UI 中观察 model/tool 调用链、普通函数与 model 的父子 runs，以及自定义和框架内部 tags、metadata、耗时与输入输出。 |
 | ✅ | LC-17 | LangSmith Evaluation | dataset、evaluator、experiment | 做最小离线评测 | 对 RAG/agent 做 mini eval | 测试思维、函数返回结构 | 2026-06-21 18:47 | 2026-06-21 22:34 | R8 | 已完成 3 条样例的 RAG mini eval；两个确定性 evaluator 分别检查答案关键词和真实检索来源，3/3 runs 均完成且平均分均为 1.00；已记录批量创建 examples、位置参数 target 和 evaluator 类型提示等排错过程。 |
-| ⬜ | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | Router 或简单 workflow | TypedDict、状态传递 |  |  | R9 |  |
+| 🟡 | LC-18 | LangGraph 入门 | graph、state、node、edge | 理解何时用 LangGraph | Router 或简单 workflow | TypedDict、状态传递 | 2026-06-22 10:59 |  | R9 | 按“纯 Python 直线图 -> Router 条件分支 -> model/tool 循环”递进学习。 |
 | ⬜ | LC-19 | Multi-agent | supervisor、handoff、subagent | 了解多 agent 设计边界 | 可选 subagent demo | 上下文隔离 |  |  | R6,R9 | 可选 |
 | ⬜ | LC-20 | 综合小项目 | agent + tools + RAG + MCP + tracing/eval | 完成可复盘项目 | 做一个个人知识库问答 agent | 项目组织、测试、提交 |  |  | R1-R9 |  |
 
